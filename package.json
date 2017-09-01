@@ -1,0 +1,21 @@
+{
+  "name": "cbc-fe-public",
+  "version": "1.0.0",
+  "description": "Code to accompany CbC",
+  "repository": "https://github.com/eeasley-coursera/cbc-fe-public",
+  "author": "Eric Easley",
+  "license": "MIT",
+  "devDependencies": {
+    "babel-cli": "6.26.0",
+    "babel-plugin-transform-class-properties": "^6.24.1",
+    "babel-preset-es2015": "^6.24.1",
+    "babel-preset-flow": "^6.23.0",
+    "babel-preset-stage-0": "^6.24.1",
+    "eslint": "^3.17.1",
+    "eslint-config-coursera": "^0.4.4",
+    "eslint-plugin-import": "^2.7.0",
+    "flow-bin": "^0.54.0",
+    "install": "^0.10.1"
+  },
+  "dependencies": {}
+}

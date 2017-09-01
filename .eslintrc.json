@@ -1,0 +1,6 @@
+{
+  "extends": "coursera",
+  "rules": {
+    "no-console": "off"
+  }
+}
