@@ -1,0 +1,36 @@
+* Motivating example
+
+Software defects are endemic to virtually all non-trivial software. Their total cost on an annual basis is measured in the billions. Alas, software is irreducibly complex and we must simply accept this, right? Not quite. The SeL4 microkernel, software operating in a decidedly non-trivial domain, has been formally proven to be free of a large class of defects. While I won't advocate formal proof of standard web apps here, this example does place a very high upper bound on software quality and invite us to consider techniques that can move us in the right direction.
+
+* Introduction
+
+If we step far enough back, developing software is about creating executable, reusable solutions to problems. A major part of this process is turning an informal or formal set of requirements into running code. That's non-trivial because developing software is a multi-phase process with the opportunity for error in every phase. Research in software psychology affirms the obvious; developing a program consists of three intertwined phases: developing a model of the problem, generating a model of the solution, and encoding the solution as code. We'll focus on the latter two.
+
+* Sources of defects and a solution
+
+To remedy deficiencies in our model of the solution, it will be useful to have a precise, declarative specification of the solution. This is really a Goldilocks request. Without practice or pressure toward rigor, the heuristics and biases program of psychological research suggests that naive mental models will be convenient rather than correct. We will underestimate the prevalence of or omit rare cases, pattern match our way to subtly incorrect solutions, hand-wave important uncertainties, etc. If naive mental models are too high-level, the code itself is too low-level. Though code enforces rigor and a program unambiguously specifies its own behavior (absent undefined behavior), the detail is overwhelming. Human short-term memory is extremely limited (two to four chunks) so any attempt to use code as our model actually forces the creation of an implicit mental model again through the pruning effect of selective attention. Instead, we want a specification language between these two poles of mentalese and running code. It should be rigorous but still mentally tractable.
+
+What does it mean to fail to encode our solution specification? It means that our actual encoding deviates from the specification; it drifts. This immediately suggests that a machine-checkable specification—one where we can automatically and without error ensure correspondence between certain aspects of our specification and code—will be valuable.
+
+At last, we reach the point: The contention of this series is that types are well-suited to play this role. They act as a declarative, precise, machine-checkable specification which can improve the process and outcomes of software development. In particular, by making good choices early on in the type system specification, we can save ourselves from harm later (reduce the possibility of defects, make our code more readable, etc.).
+
+* A metaphor
+
+If it's useful, we can then view types as a commitment mechanism. When we specify our types, we preclude others and future versions of ourselves from taking certain actions---actions which we know in the moment to be unwise but which would otherwise remain available and tempting. To make the metaphor more narrative, we can recall a common story used to explain commitment mechanisms: Odysseus and the Sirens. During Odysseus's long voyage home, he needed to pass the island of the Sirens. He had heard their song was so beautiful that all who heard it leapt off their ship in an effort to come closer to the Sirens and hear better. Once they leapt, the Sirens devoured them. Eager to avoid death but still intrigued by this singular music, Odysseus ordered his crewmen to plug their ears with wax while insisting that they instead tie him to the mast and ignore any Siren-induced pleas for release. The plan worked and Odysseus became one of very few mortals to hear the Sirens' music. Like Odysseus, we want to use the type system to restrain ourselves such that we can deliver beautiful functionality while avoiding death by software defect.
+
+* Goals
+
+- Learn a suite of techniques (primarily leveraging the type system) that can be used to encourage correctness
+  - We'll know this goal is met when opportunities for these techniques are repeatedly spotted and used
+- Cultivate a sensibility in which defects are ruled out as early as possible.
+  - We'll know this goal is well on its way when we can point to one or more instances in which we avoided introducing a defect due to these techniques and lines of thought
+
+* Type system vs alternatives
+
+Earlier, I motivated a need for declarative, precise, machine-checkable specifications. But I didn't (and can't) demonstrate that types are the only tool fulfilling this role. Alternatives that come to mind are tests and other formal methods like model checking. We don't focus on these in this series because:
+  - I cannot possibly hope to resolve the long-running tests vs types discussion here. Instead, I'll make two points in favor of types that I hope are persuasive enough to justify further investment in the series and move on. First, I'll allude to the fairly well-known empirical result in the study of software development that the cost of fixing a defect increases with the lateness of its discovery. Second, I'll contend that types complement and compensate for the human cognitive architecture and deficiencies in a way that tests do not. We plan to explore this relationship in more detail throughout the series. This trick of grounding our claims in cognitive science may allow us to substitute its relatively robust theory and body of evidence for the anemic theory and evidence in the field of software.
+  - The first argument against other formal methods is that they're unfamiliar to most and can thus be hard to introduce in a practicing organization. The second is simply that your humble author is among those less familiar with other formal methods.
+
+* Summary
+
+I claimed that precise, declarative, machine-checkable specifications can improve software development. Type systems play that role well. This series should teach the reader techniques that leverage the type system to encourage correctness and cultivate a sensibility of ruling out errors early.

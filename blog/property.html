@@ -1,0 +1,640 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<!-- 2017-10-06 Fri 10:02 -->
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>&lrm;</title>
+<meta name="generator" content="Org mode" />
+<meta name="author" content="Eric Easley" />
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: visible;
+    padding-top: 1.2em;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    background-color: white;
+    top: -10px;
+    right: 10px;
+    padding: 3px;
+    border: 1px solid black;
+  }
+  pre.src:hover:before { display: inline;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { width: 90%; }
+  /*]]>*/-->
+</style>
+<style>.accordion { border: 1px solid #ccc; box-shadow: 3px 3px 3px #eee; padding: 0em 1em; margin-left: 1em; }</style>
+<style>.accordion-head { cursor: pointer; }</style>
+<style>.accordion-head > p:first-child { font-variant: small-caps; }</style>
+<style>.accordion-body { max-height: 0em; transform: scaleY(0); transition: transform 0.3s; transform-origin: top; }</style>
+<style>.accordion-body > p:first-child { margin-top: 0; padding-top: 0.5em; }</style>
+<style>.accordion-head > p:last-child { margin-bottom: 0; padding-bottom: 0.5em; }</style>
+<style>.accordion-body:hover { max-height: 10000em; transform: scaleY(1); }</style>
+<style>.accordion-head:hover + .accordion-body { max-height: 10000em; transform: scaleY(1); }</style>
+<style>.meta { opacity: 0.75; margin-left: 1em; }</style>
+<style>.trigger { border: 1px solid #ccc; box-shadow: 3px 3px 3px #eee; padding: 0.5em 1em; margin-left: 1em; }</style>
+<style>.trigger:before { content: 'Trigger'; font-variant: small-caps; }</style>
+<style>.optional { border: 1px solid #ccc; box-shadow: 3px 3px 3px #eee; padding: 0.5em 1em; margin-left: 1em; opacity: 0.05; transition: opacity .25s ease-in-out; }</style>
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2017 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+</head>
+<body>
+<div id="content">
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#orgc1525ac">1. Prior knowledge</a></li>
+<li><a href="#org859eb00">2. Property testing</a></li>
+<li><a href="#orgaa23966">3. Goals</a></li>
+<li><a href="#org85cbb98">4. Property testing examples</a>
+<ul>
+<li><a href="#org11a1b87">4.1. Introductory</a></li>
+<li><a href="#org1a2e6e7">4.2. More realistic</a></li>
+</ul>
+</li>
+<li><a href="#org86fe7c6">5. Relationship to prior material</a></li>
+<li><a href="#org240485d">6. Summary</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgc1525ac" class="outline-2">
+<h2 id="orgc1525ac"><span class="section-number-2">1</span> Prior knowledge</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+Have you ever found a bug in your code and felt certain that you had tests covering the buggy code? If you have, the problem was likely that your tests encoded the same wrong assumptions that led you to write buggy code.
+</p>
+
+<p>
+This is a problem property testing hopes to solve.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org859eb00" class="outline-2">
+<h2 id="org859eb00"><span class="section-number-2">2</span> Property testing</h2>
+<div class="outline-text-2" id="text-2">
+<p>
+Ordinary unit tests take a unit of code under test (for simplicity, we'll assume a function) and evaluate it at several known values to check that it returns the correct, known results at those values. Clearly, this approach is very inexhaustive and highly sensitive to which values the tester happens to choose.
+</p>
+
+<p>
+Property testing instead uses a test framework to generate many, arbitrary values of the appropriate type and feed them through the function under test. Because the function is working with arbitrary values, we can't just check the output for correctness (unless we have a reference implementation&#x2014;with unit tests, our manual offline computation on some fixed set of values acts as a partial reference implementation) without reimplementing the whole function a second time. Instead, we specify certain properties (which should be simpler to implement than the function under test) we expect our output to hold with respect to the input and check those.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgaa23966" class="outline-2">
+<h2 id="orgaa23966"><span class="section-number-2">3</span> Goals</h2>
+<div class="outline-text-2" id="text-3">
+<ul class="org-ul">
+<li>Learn about property testing
+<ul class="org-ul">
+<li>You'll know you're on your way when you understand the essential idea and can work through some examples</li>
+<li>Check this goal off when you're writing property tests in support of your ordinary code</li>
+</ul></li>
+<li>Understand how property testing relates to our other correct by construction principles
+<ul class="org-ul">
+<li>We'll have succeeded at this goal when we can fairly say that using property testing has increased our intuition for and usage of the other principles</li>
+</ul></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org85cbb98" class="outline-2">
+<h2 id="org85cbb98"><span class="section-number-2">4</span> Property testing examples</h2>
+<div class="outline-text-2" id="text-4">
+<p>
+Suppose we're told to implement a multiplication function (for some unfathomable reason).
+</p>
+</div>
+
+<div id="outline-container-org11a1b87" class="outline-3">
+<h3 id="org11a1b87"><span class="section-number-3">4.1</span> Introductory</h3>
+<div class="outline-text-3" id="text-4-1">
+<div class="accordion">
+<div class="accordion-head">
+<p>
+Practice
+</p>
+
+<p>
+Try to come up with an implementation of <code>multiply</code> which satisfies the following test suite but isn't actually standard multiplication:
+</p>
+
+<div class="org-src-container">
+<pre><code class="src src-js">/* Placeholder: */
+const _: any = undefined;
+
+function multiply(left: number, right: number): number {
+  return _;
+}
+console.assert(multiply(0, 3) == 0, 'Multiplying by 0 didn\'t result in 0');
+console.assert(multiply(1, 2) == 2, 'Multiplying by 1 wasn\'t an identity');
+console.assert(multiply(3, 4) == 12, 'Wrong on 3 * 4');
+</code></pre>
+</div>
+
+</div>
+<div class="accordion-body">
+<p>
+It's pretty easy. Here's one possible nonsensical implementation:
+</p>
+
+<div class="org-src-container">
+<pre><code class="src src-js">function multiply(left: number, right: number): number {
+  if (left === 0 &amp;&amp; right === 3) {
+    return 0;
+  } else if (left === 1 &amp;&amp; right == 2) {
+    return 2;
+  } else if (left === 3 &amp;&amp; right === 4) {
+    return 12;
+  } else {
+    return -1;
+  }
+}
+</code></pre>
+</div>
+
+</div>
+
+</div>
+
+<p>
+Now we'll bring in <a href="http://jsverify.github.io/">JSVerify</a>&#x2014;a property testing library:
+</p>
+
+<div class="accordion">
+<div class="accordion-head">
+<p>
+Practice
+</p>
+
+<p>
+Try to come up with a non-standard <code>multiply</code> which satisfies <i>this</i> test suite:
+</p>
+
+<div class="org-src-container">
+<pre><code class="src src-js">import jsv from 'jsverify';
+
+/* Placeholder: */
+const _: any = undefined;
+
+function multiply(left: number, right: number): number {
+  return _;
+}
+/* This declaration basically says,
+"Given an arbitrary integer, multiplying by one just returns the integer."
+JSVerify's `checkForall` checks this property by generating many integers
+and running the declared function on them: */
+jsv.checkForall(jsv.integer, a =&gt;
+  multiply(a, 1) === a
+);
+/* This declaration basically says,
+"Given an arbitrary integer, multiplying by zero returns zero."
+JSVerify's `checkForall` checks this property by generating many integers
+and running the declared function on them: */
+jsv.checkForall(jsv.integer, a =&gt;
+  multiply(a, 0) === 0
+);
+/* Generates two arbitrary integers and checks for commutativity: */
+jsv.checkForall(jsv.integer, jsv.integer, (a, b) =&gt;
+  multiply(a, b) === multiply(b, a)
+);
+/* Associativity: */
+jsv.checkForall(jsv.integer, jsv.integer, jsv.integer, (a, b, c) =&gt;
+  multiply(multiply(a, b), c) === multiply(a, multiply(b, c))
+);
+/* Inverse: */
+jsv.checkForall(jsv.integer, a =&gt;
+  mul7(a, -1) + a === 0
+);
+</code></pre>
+</div>
+
+</div>
+<div class="accordion-body">
+<p>
+It's vastly harder to write an incorrect implementation! So much harder, in fact, that I won't even attempt it here.
+</p>
+
+</div>
+
+</div>
+</div>
+</div>
+
+<div id="outline-container-org1a2e6e7" class="outline-3">
+<h3 id="org1a2e6e7"><span class="section-number-3">4.2</span> More realistic</h3>
+<div class="outline-text-3" id="text-4-2">
+<p>
+Let's suppose we have to pick a winner based on a collection of scores:
+</p>
+
+<div class="org-src-container">
+<pre><code class="src src-js">import jsv from 'jsverify';
+
+type Candidate = {
+  name: string,
+  score: number,
+};
+
+/* We want value equality rather than reference equality: */
+function candidateEquality(left: Candidate, right: Candidate): boolean {
+  return left.name === right.name &amp;&amp; left.score === right.score;
+}
+
+/* This looks like a superficially reasonable implementation: */
+function pickWinnerBad(candidates: Array&lt;Candidate&gt;): Candidate {
+  return candidates.reduce((acc, candidate) =&gt; (candidate.score &gt;= acc.score ? candidate : acc));
+}
+
+/* Now, we have to tell JSVerify how to make an arbitrary `Candidate`: */
+const arbitraryCandidate = jsv.record({
+  name: jsv.asciinestring,
+  score: jsv.number(0, 1),
+});
+
+/* Our winner shouldn't depend on the input order of candidates: */
+jsv.checkForall(jsv.array(arbitraryCandidate), (candidates) =&gt; {
+  const result1 = pickWinnerBad(candidates);
+  const result2 = pickWinnerBad(candidates.reverse);
+  return candidateEquality(result1, result2);
+});
+
+/* Improving a winner's score should never make them lose: */
+jsv.checkForall(jsv.array(arbitraryCandidate), (candidates) =&gt; {
+  const result1 = pickWinnerBad(candidates);
+  const betterScore = Object.assign({}, result1, { score: Math.min(result1.score + 0.1, 1) });
+  // Remove winner and re-add with increased score
+  const alteredCandidates =
+    candidates
+      .filter(candidate =&gt; candidate.name !== result1.name || candidate.score !== result1.score)
+      .concat([betterScore]);
+  const result2 = pickWinnerBad(alteredCandidates);
+  return candidateEquality(result1, result2);
+});
+
+/* If there's only one candidate, they win: */
+jsv.checkForall(arbitraryCandidate, (candidate) =&gt; {
+  const result = pickWinnerBad([candidate]);
+  return candidateEquality(result, candidate);
+});
+
+/* But even these simple property tests reveal a myriad of problems:
+- A winner out of zero candidates makes no sense so our input collection should be non-empty
+- Our ordering test quickly reveals that we need to account for ties by returning a collection of winners
+  (without some tie-breaking criterion, any single winner will have to be chosen from the winning set arbitrarily)
+- We can eliminate the need for our ordering property entirely by using a `Set` instead of an `Array` 
+  (which inherently provides the unordered property for free) */
+
+
+/* Our fixed implementation: */
+function pickWinnerGood(candidates: NonEmptySet&lt;Candidate&gt;): NonEmptySet&lt;Candidate&gt; {
+  return candidates.valueArray().reduce((acc, candidate) =&gt; {
+    // By construction, all scores in the `acc` are the same.
+    const score = acc.valueArray()[0];
+    if (score === candidate.score) {
+      return acc.add_(candidate);
+    } else if (score &lt; candidate.score) {
+      return NonEmptySet.singleton(candidate);
+    } else {
+      return acc;
+    }
+  }, NonEmptySet.singleton(candidates.valueArray()[0]));
+}
+
+/* A function for generating arbitrary `NonEmptySet`s: */
+const arbitraryNonEmptySet =
+  arbitraryElement =&gt; jsv.nonshrink(jsv.nearray(arbitraryElement).smap(array =&gt; new NonEmptySet(new Set(array))));
+
+/* Improving a winner's score should never make them lose: */
+jsv.checkForall(arbitraryNonEmptySet(arbitraryCandidate), (candidates) =&gt; {
+  const result1 = pickWinnerGood(candidates).valueArray()[0];
+  const betterScore = Object.assign({}, result1, { score: Math.min(result1.score + 0.1, 1) });
+  const candidatesWithoutWinner =
+    candidates
+      .filter(candidate =&gt; candidate.name !== result1.name || candidate.score !== result1.score);
+  const alteredCandidates =
+    candidates == null ? NonEmptySet.singleton(betterScore) : candidates.add_(betterScore);
+  const result2 = pickWinnerGood(alteredCandidates);
+  return result2.some(candidate =&gt; candidateEquality(candidate, result1));
+});
+
+/* If there's only one candidate, they win: */
+jsv.checkForall(arbitraryCandidate, (candidate) =&gt; {
+  const result = pickWinnerGood(NonEmptySet.singleton(candidate)).valueArray()[0];
+  return candidateEquality(result, candidate);
+});
+</code></pre>
+</div>
+
+<div class="accordion">
+<div class="accordion-head">
+<p>
+Optional
+</p>
+
+</div>
+<div class="accordion-body">
+<p>
+Here's an implementation of our <code>NonEmptySet</code> used above. It's not very interesting but included for completeness.
+</p>
+
+<div class="org-src-container">
+<pre><code class="src src-js">class NonEmptySet&lt;A&gt; {
+  raw: Set&lt;A&gt;;
+  static valid(set: Set&lt;A&gt;): boolean {
+    return set.size !== 0;
+  }
+  values(): Iterator&lt;A&gt; {
+    return this.raw.values();
+  }
+  valueArray(): Array&lt;A&gt; {
+    return Array.from(this.values());
+  }
+  filter(predicate: A =&gt; boolean): ?NonEmptySet&lt;A&gt; {
+    return NonEmptySet.fromIterable(this.valueArray().filter(predicate));
+  }
+  // Non-mutating `add`
+  add_(a: A): NonEmptySet&lt;A&gt; {
+    return new NonEmptySet(new Set(this.valueArray().concat([a])));
+  }
+  some(predicate: A =&gt; boolean): boolean {
+    return this.valueArray().some(predicate);
+  }
+  every(predicate: A =&gt; boolean): boolean {
+    return this.valueArray().every(predicate);
+  }
+  size(): number {
+    return this.raw.size;
+  }
+  equals(eq: (left: A, right: A) =&gt; boolean, set: NonEmptySet&lt;A&gt;): boolean {
+    return this.size === set.size &amp;&amp; this.every(l =&gt; set.some(r =&gt; eq(l, r)));
+  }
+  constructor(set: Set&lt;A&gt;): NonEmptySet&lt;A&gt; {
+    if (NonEmptySet.valid(set)) {
+      this.raw = set;
+      return this;
+    } else {
+      throw new TypeError('Empty set');
+    }
+  }
+  static singleton(a: A): NonEmptySet&lt;A&gt; {
+    return new NonEmptySet(new Set([a]));
+  }
+  static fromIterable(iter: Iterable&lt;A&gt;): ?NonEmptySet&lt;A&gt; {
+    return NonEmptySet.fromSet(new Set(iter));
+  }
+  static fromSet(set: Set&lt;A&gt;): ?NonEmptySet&lt;A&gt; {
+    try {
+      return new NonEmptySet(set);
+    } catch (e) {
+      if (e instanceof TypeError) {
+        return null;
+      } else {
+        throw e;
+      }
+    }
+  }
+}
+</code></pre>
+</div>
+
+</div>
+
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org86fe7c6" class="outline-2">
+<h2 id="org86fe7c6"><span class="section-number-2">5</span> Relationship to prior material</h2>
+<div class="outline-text-2" id="text-5">
+<p>
+In the first content post, we talked about "making illegal state unrepresentable". Property testing can help build our intuition for what this means and rewards it. How? The simpler any given arbitrary generator is, the better. Any use of <code>jsv.suchthat</code> ("filters" another arbitrary generator) is a code smell and an encouragement to write a new type embedding this logic. We saw some of this with the switch from <code>Array</code> to <code>Set</code> in <code>pickWinner</code>.
+</p>
+
+<p>
+In the second, we talked about choosing signatures such that our implementation spaces were small. Adding on property tests is another powerful way to constrain our implementation space. We saw this when our property tests ruled out implementations that our unit tests had allowed.
+</p>
+
+<p>
+In the third content post, we talked about avoiding global reasoning. Functions with implicit requirements fare poorly in a property testing setting. Our tests are much less likely to fail spuriously when we precisely encode, then necessarily satisfy, the requirements of our function. We didn't see any of this first hand, but it's not hard to imagine tests failing when you don't satisfy their preconditions.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org240485d" class="outline-2">
+<h2 id="org240485d"><span class="section-number-2">6</span> Summary</h2>
+<div class="outline-text-2" id="text-6">
+<p>
+Property testing generates many arbitrary pieces of data to avoid a major pitfall of unit testing (only testing a few hand-picked data points). It also ties together much of the content we've talked about and gives us another angle on the material.
+</p>
+</div>
+</div>
+</div>
+</body>
+</html>

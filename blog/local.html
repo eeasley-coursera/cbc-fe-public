@@ -1,0 +1,764 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<!-- 2017-10-06 Fri 10:02 -->
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>&lrm;</title>
+<meta name="generator" content="Org mode" />
+<meta name="author" content="Eric Easley" />
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: visible;
+    padding-top: 1.2em;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    background-color: white;
+    top: -10px;
+    right: 10px;
+    padding: 3px;
+    border: 1px solid black;
+  }
+  pre.src:hover:before { display: inline;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { width: 90%; }
+  /*]]>*/-->
+</style>
+<style>.meta { opacity: 0.75; margin-left: 1em; }</style>
+<style>.accordion { border: 1px solid #ccc; box-shadow: 3px 3px 3px #eee; padding: 0em 1em; margin-left: 1em; }</style>
+<style>.accordion-head { cursor: pointer; }</style>
+<style>.accordion-head > p:first-child { font-variant: small-caps; }</style>
+<style>.accordion-body { max-height: 0em; transform: scaleY(0); transition: transform 0.3s; transform-origin: top; }</style>
+<style>.accordion-body > p:first-child { margin-top: 0; padding-top: 0.5em; }</style>
+<style>.accordion-head > p:last-child { margin-bottom: 0; padding-bottom: 0.5em; }</style>
+<style>.accordion-body:hover { max-height: 10000em; transform: scaleY(1); }</style>
+<style>.accordion-head:hover + .accordion-body { max-height: 10000em; transform: scaleY(1); }</style>
+<style>.trigger { border: 1px solid #ccc; box-shadow: 3px 3px 3px #eee; padding: 0.5em 1em; margin-left: 1em; }</style>
+<style>.trigger:before { content: 'Trigger'; font-variant: small-caps; }</style>
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2017 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+</head>
+<body>
+<div id="content">
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#orgeda1e9f">1. Prior knowledge</a></li>
+<li><a href="#orge3f49b5">2. Global vs local reasoning</a></li>
+<li><a href="#org4c58198">3. Goals</a></li>
+<li><a href="#org2df86c3">4. How</a>
+<ul>
+<li><a href="#orgd0d81c4">4.1. Smart constructors over validations</a></li>
+<li><a href="#org701c4dc">4.2. Wrappers</a></li>
+<li><a href="#org8561252">4.3. Witness</a>
+<ul>
+<li><a href="#org322db36">4.3.1. Extension</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#org6be0c90">5. Why</a>
+<ul>
+<li><a href="#orgbc98c46">5.1. Code quality</a>
+<ul>
+<li><a href="#orgfb26127">5.1.1. Documentation</a></li>
+<li><a href="#org4077151">5.1.2. Reliability</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgeda1e9f" class="outline-2">
+<h2 id="orgeda1e9f"><span class="section-number-2">1</span> Prior knowledge</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+Flawless concurrent programs are legendarily hard. Some race condition, deadlock or resource starvation creeps in and your program no longer does what you expect.
+</p>
+
+<p>
+Have you ever traced a bug only to find it originates with "impossible" data in the database? A negative age, a payment pointing to a missing user, etc. Such occasions renew our appreciation for foreign key constraints, check constraints and other strong checks for data integrity.
+</p>
+
+<p>
+Many best practices guides also advise that global mutable state is to be strenuously avoided. For example, <a href="https://softwareengineering.stackexchange.com/questions/148108/why-is-global-state-so-evil">here</a> or <a href="http://wiki.c2.com/?GlobalVariablesAreBad">here</a>.
+</p>
+
+<p>
+I claim that there is an underlying commonality to these examples. In each case, we encounter errors because we must perform "global" reasoning. When working with concurrency, many systems require us to try to mentally explore the space of all possible execution interleavings. When ensuring that data meets integrity constraints, we are required to think through all insert and update paths hitting the database and make sure they conform to our rules in all cases. Working with global mutable state successfully requires us to know which other functions have and haven't been called before this function.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orge3f49b5" class="outline-2">
+<h2 id="orge3f49b5"><span class="section-number-2">2</span> Global vs local reasoning</h2>
+<div class="outline-text-2" id="text-2">
+<p>
+Local reasoning is called for when we can infer the correctness of a piece of code only from its local context&#x2014;e.g. determining the correctness of function only by examining its body. When we must understand some operational context beyond the immediate code (e.g. which functions have been previously executed, what data is in the database), that's global reasoning (Though, of course, there's really a spectrum between local and global reasoning depending on how much context must be understood.).
+</p>
+
+<div class="accordion">
+<div class="accordion-head">
+<p>
+Practice
+</p>
+
+<p>
+What other code do you need to see to understand the behavior of the following?
+</p>
+
+<div class="org-src-container">
+<pre><code class="src src-js">function add(left: number, right: number): number {
+  return left + right;
+}
+</code></pre>
+</div>
+
+</div>
+<div class="accordion-body">
+<p>
+None. It's a prime example of local reasoning. There are no side effects&#x2014;it's a pure function of its arguments.
+</p>
+
+</div>
+
+</div>
+
+<div class="accordion">
+<div class="accordion-head">
+<p>
+Practice
+</p>
+
+<p>
+What other code do you need to see to understand the behavior of the following?
+</p>
+<div class="org-src-container">
+<pre><code class="src src-js">function conditionalIncrement(num: number): number {
+  return this.increment ? num + 1 : num;
+}
+</code></pre>
+</div>
+
+</div>
+<div class="accordion-body">
+<p>
+At a minimum, you need to understand all other code that interacts with <code>this.increment</code>. This is global reasoning.
+</p>
+
+</div>
+
+</div>
+</div>
+</div>
+
+<div id="outline-container-org4c58198" class="outline-2">
+<h2 id="org4c58198"><span class="section-number-2">3</span> Goals</h2>
+<div class="outline-text-2" id="text-3">
+<ul class="org-ul">
+<li>Learn the distinction between global and local reasoning
+<ul class="org-ul">
+<li>You'll know you're on the way when you can easily recall the definition and can bring examples to mind</li>
+<li>Check this goal off when you can generate and apply novel ways of transforming problems of global reasoning into problems of local reasoning</li>
+</ul></li>
+<li>Learn some techniques for transforming problems of global reasoning into problems of local reasoning</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org2df86c3" class="outline-2">
+<h2 id="org2df86c3"><span class="section-number-2">4</span> How</h2>
+<div class="outline-text-2" id="text-4">
+</div>
+<div id="outline-container-orgd0d81c4" class="outline-3">
+<h3 id="orgd0d81c4"><span class="section-number-3">4.1</span> Smart constructors over validations</h3>
+<div class="outline-text-3" id="text-4-1">
+<p>
+We've already seen some examples of this next technique though we phrased it in terms of "make illegal state unrepresentable" rather than global versus local reasoning.
+</p>
+
+<div class="org-src-container">
+<pre><code class="src src-js">/* This will be shared across both implementations: */
+const slugRegex = /^[a-z-]+$/;
+
+/* This is, arguably, standard practice. We declare a class which declares its validations: */
+class SlugBad {
+  slug: string;
+  constructor(str: string) {
+    this.slug = str;
+    return this;
+  }
+  validateSlug(): boolean {
+    return slugRegex.test(this.slug);
+  }
+}
+
+/* But it's trivial to have data which doesn't satisfy the validations: */
+console.log(new SlugBad('ABC'));
+
+/* Instead, we embed the validation in the constructor: */
+class SlugGood {
+  raw: string;
+  constructor(str: string): SlugGood {
+    if (slugRegex.test(str)) {
+      this.raw = str;
+      return this;
+    } else {
+      throw new TypeError('Not a valid slug');
+    }
+  }
+  static make(str: string): ?SlugGood {
+    try {
+      return new SlugGood(str);
+    } catch (e) {
+      if (e instanceof TypeError) {
+        return null;
+      } else {
+        throw e;
+      }
+    }
+  }
+}
+
+console.log(SlugGood.make('abc'));
+</code></pre>
+</div>
+
+<p>
+With the second approach, the only way to construct a <code>SlugGood</code> is through a constructor which performs the validation (these are sometimes called "smart constructors"). Thus, we can be assured that if we have a <code>SlugGood</code> the underlying data satisfies our criteria.
+</p>
+
+<p>
+To be explicit, this is a useful shift from a problem of global reasoning to a problem of local reasoning. In the first setup, if we have a <code>SlugBad</code> and we need to be sure the slug really is valid, we have two choices:
+</p>
+<ul class="org-ul">
+<li>We can validate again (and again and again) at each use site which leads to a proliferation of error handling code and duplication of possibly expensive checks.</li>
+<li>We can try to trace the <code>SlugBad</code> to its point of origin and ensure that validation was performed somewhere along the way.</li>
+</ul>
+<p>
+The latter is a clear demand for global reasoning and thus very hard to execute flawlessly. If we rely on it, we'll almost surely forget to validate along some code paths some of the time.
+</p>
+
+<p>
+<code>SlugGood</code> to the rescue. Why does this work? With <code>SlugBad</code> we have an implicit piece of state&#x2014;whether the validation has been performed&#x2014;which we must track manually. <code>SlugGood</code> makes this piece of state explicit in the type system via the transition from <code>string</code> to <code>SlugGood</code> and pushes the burden off onto our type checker. We'll see this is a generally applicable pattern in solving problems of global reasoning (make the type checker do the global reasoning instead by making something explicit).
+</p>
+</div>
+</div>
+
+<div id="outline-container-org701c4dc" class="outline-3">
+<h3 id="org701c4dc"><span class="section-number-3">4.2</span> Wrappers</h3>
+<div class="outline-text-3" id="text-4-2">
+<p>
+Here's another very simple technique that can pay off well. The basic technique is just to "wrap" types to reflect semantics.
+</p>
+
+<div class="org-src-container">
+<pre><code class="src src-js">class Name {
+  name: string;
+  constructor(str: string) {
+    this.name = str;
+    return this;
+  }
+}
+</code></pre>
+</div>
+
+<p>
+Why would this be useful? Aside from the obvious and relatively small benefit of ensuring that we don't accidentally mix up various strings, we can apply this technique in more interesting scenarios. Suppose we have two versions of course slug on the backend (the backend wants to change the serialization format, for example)&#x2014;the original version and the one we're trying to migrate to. During the migration, we'll also end up with two sets of functions for interacting with these APIs:
+</p>
+
+<div class="org-src-container">
+<pre><code class="src src-js">/* Placeholder */
+const _: any = undefined;
+
+type CourseDescription = {
+  // ...
+};
+
+function authoringUpdateCourseBad(slug: string, course: CourseDescription): void {
+  return _;
+}
+
+function loadCourseDescriptionBad(slug: string): CourseDescription {
+  return _;
+}
+
+/* And on and on for all functionality depending on these APIs. */
+
+function authoringUpdateCourseV2Bad(slug: string, course: CourseDescription): void {
+  return _;
+}
+
+function loadCourseDescriptionV2Bad(slug: string): void {
+  return _;
+}
+
+/* And on and on for all functionality depending on these APIs. */
+</code></pre>
+</div>
+
+<p>
+But what happens when the backend wants to finally remove support for the old, deprecated slug format? How can we be sure we no longer depend on it? The only way is to search through our whole code base and hope we find all use sites. This is simultaneously tedious and error-prone.
+</p>
+
+<p>
+A better approach might look like:
+</p>
+
+<div class="org-src-container">
+<pre><code class="src src-js">/* Placeholder */
+const _: any = undefined;
+
+type CourseDescription = {
+  // ...
+};
+class Slug {
+  slug: string;
+  constructor(str: string) {
+    this.slug = str;
+    return this;
+  }
+}
+class SlugV2 {
+  slug: string;
+  constructor(str: string) {
+    this.slug = str;
+    return this;
+  }
+}
+
+function authoringUpdateCourseGood(slug: Slug, course: CourseDescription): void {
+  return _;
+}
+
+function loadCourseDescriptionGood(slug: Slug): void {
+  return _;
+}
+
+function authoringUpdateCourseV2Good(slug: SlugV2, course: CourseDescription): void {
+  return _;
+}
+
+function loadCourseDescriptionV2Good(slug: SlugV2): void {
+  return _;
+}
+</code></pre>
+</div>
+
+<p>
+Now, the problem of removing dependence on the old slug format is trivial. We simply delete the original <code>Slug</code> and whatever doesn't compile must go.
+</p>
+
+<p>
+Again, we see that we solved a problem of global reasoning by making implicit information explicit in the type system. This time we made our slug version explicit my having a separate type for each version (even though the classes don't do anything interesting on their own!).
+</p>
+</div>
+</div>
+
+<div id="outline-container-org8561252" class="outline-3">
+<h3 id="org8561252"><span class="section-number-3">4.3</span> Witness</h3>
+<div class="outline-text-3" id="text-4-3">
+<p>
+Sometimes the implicit information we want to make explicit isn't "attached" to any type. In this case, we will have a simple value which functions as a "witness" that a side effect has been performed. A very simple example:
+</p>
+
+<div class="org-src-container">
+<pre><code class="src src-js">/* Placeholder */
+const _: any = undefined;
+
+/* Perform some effectful operation (e.g. writing to the database, sending an email): */
+function doBrilligBad(slithyId: number): void {
+  _;
+}
+/* Some follow-up functionality: */
+function mustHaveBrilliggedBad(): void {
+  _;
+}
+/* The problem here is that there's no guarantee we'll /actually/ perform the prerequisite action. Especially in cases where we don't have the good fortune of having the function name explicitly declare it's preconditions.
+
+Instead: */
+
+class HaveBrilligged {
+  function doBrilligGood(slithyId: number): void {
+    _;
+  }
+  constructor(slithyId: number): HaveBrilligged {
+    doBrilligGood(slithyId);
+    return this;
+  }
+}
+
+function mustHaveBrilliggedGood(haveBrilligged: HaveBrilligged): void {
+  _;
+}
+</code></pre>
+</div>
+
+<p>
+The second approach makes our <code>brillig</code> requirement explicit. We can no longer forget it. Any caller of <code>mustHaveBrilliggedGood</code> has to have a <code>HaveBrilligged</code> at hand and the only constructor for that calls <code>doBrilligGood</code>. So we're pushing our global burden (all callers must have performed a prior action) into the type system yet again.
+</p>
+
+<p>
+This is much like our smart constructor technique. Except now our constructor is doing a side-effecting operation instead of performing validation. We call the resulting `HaveBrilligged` value a "witness" of the side-effect.
+</p>
+
+<p>
+Now for a somewhat more realistic (and, hopefully, motivating) example. Suppose we have a page which expects to often display paid content. We only actually display the paid content inside the page if the user has paid for it. If the user hasn't paid, we instead show them an upsell modal. Here's what that might look like:
+</p>
+
+<div class="org-src-container">
+<pre><code class="src src-js">import React from 'react';
+
+/* Just for convenience. In the real world, we'd use something better. */
+type Html = string;
+const _: any = undefined;
+
+/* `loadContent` will fail in an ugly way if the user hasn't paid for the content. */
+class PaidCourseContentBodyBad extends React.Component&lt;{userId: string, itemId: string}, {itemContent: Html}&gt; {
+  loadContent(userId: string, itemId: string): Html {
+    return _;
+  }
+}
+
+class Upsell extends React.Component&lt;{itemId: string}, void&gt; {}
+
+/* This component checks the payment status and picks a component to render accordingly. */
+class PaidCourseContentPageBad extends React.Component&lt;{userId: string, itemId: string}, {hasPaid: boolean}&gt; {
+  static fetchPaymentStatus(userId: string, itemId: string): boolean {
+    return _;
+  }
+  setPaymentStatus(userId: string, itemId: string): void {
+    this.setState({ hasPaid: PaidCourseContentPageBad.fetchPaymentStatus(userId, itemId) });
+  }
+  render() {
+    const body =
+          this.state.hasPaid ?
+            &lt;PaidCourseContentBodyBad userId={this.props.userId} itemId={this.props.itemId} /&gt; :
+            &lt;Upsell itemId={this.props.itemId} /&gt;;
+    return &lt;div&gt; {/* ... */} body {/* ... */} &lt;/div&gt;;
+  }
+}
+</code></pre>
+</div>
+
+<p>
+By now, you should be tired of hearing about these problems. <code>PaidCourseContentBodyBad</code> has an implicit precondition&#x2014;the check of payment status. We do it successfully in <code>PaidCourseContentPageBad</code>, but the whole point of components is to be reusable. It would be easy to reuse <code>PaidCourseContentBodyBad</code> in a different context and forget to perform the check.
+</p>
+
+<p>
+A solution:
+</p>
+
+<div class="org-src-container">
+<pre><code class="src src-js">type Html = string;
+const _: any = undefined;
+
+class HasPaid {
+  static fetchPaymentStatus(userId: string, itemId: string): boolean {
+    return _;
+  }
+  constructor(userId: string, itemId: string): HasPaid {
+    if (HasPaid.fetchPaymentStatus(userId, itemId)) {
+      return this;
+    } else {
+      throw new TypeError('User hasn\'t paid for content');
+    }
+  }
+  static make(userId: string, itemId: string): ?HasPaid {
+    try {
+      return new HasPaid(userId, itemId);
+    } catch (e) {
+      if (e instanceof TypeError) {
+        return null;
+      } else {
+        throw e;
+      }
+    }
+  }
+}
+
+class PaidCourseContentBodyGood extends
+  React.Component&lt;{userId: string, itemId: string, hasPaid: HasPaid}, {itemContent: Html}&gt; {
+  loadContent(userId: string, itemId: string): Html {
+    return _;
+  }
+}
+
+class PaidCourseContentPageGood extends React.Component&lt;{userId: string, itemId: string}, {hasPaid: ?HasPaid}&gt; {
+  setPaymentStatus(userId: string, itemId: string): void {
+    this.setState({ hasPaid: HasPaid.make(userId, itemId) });
+  }
+  render() {
+    const body =
+          this.state.hasPaid ?
+           (&lt;PaidCourseContentBodyGood
+             userId={this.props.userId}
+             itemId={this.props.itemId}
+             hasPaid={this.state.hasPaid}
+           /&gt;) :
+           (&lt;Upsell
+             itemId={this.props.itemId}
+           /&gt;);
+    return &lt;div&gt; {/* ... */} body {/* ... */} &lt;/div&gt;;
+  }
+}
+</code></pre>
+</div>
+
+<p>
+Hurray! We've again made our requirement explicit via <code>HasPaid</code> which witnesses our check.
+</p>
+</div>
+
+<div id="outline-container-org322db36" class="outline-4">
+<h4 id="org322db36"><span class="section-number-4">4.3.1</span> Extension</h4>
+<div class="outline-text-4" id="text-4-3-1">
+<p>
+With a little imagination, you can see how we could extend this technique to encode full state machines in a way that ensures we make only valid transitions between states.
+</p>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org6be0c90" class="outline-2">
+<h2 id="org6be0c90"><span class="section-number-2">5</span> Why</h2>
+<div class="outline-text-2" id="text-5">
+</div>
+<div id="outline-container-orgbc98c46" class="outline-3">
+<h3 id="orgbc98c46"><span class="section-number-3">5.1</span> Code quality</h3>
+<div class="outline-text-3" id="text-5-1">
+<p>
+We'll claim the standard benefits: documentation and reuse.
+</p>
+</div>
+
+<div id="outline-container-orgfb26127" class="outline-4">
+<h4 id="orgfb26127"><span class="section-number-4">5.1.1</span> Documentation</h4>
+<div class="outline-text-4" id="text-5-1-1">
+<p>
+Following these practices makes type signatures more informative.
+</p>
+
+<p>
+Go back and look through our examples. In each case, we have made an implicit requirement explicit. These explicit requirements, captured in code rather than locked in the original author's mind, are much more likely to be noticed and won't leave a some future modifier wondering why the code doesn't do what it looks like it should do.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org4077151" class="outline-4">
+<h4 id="org4077151"><span class="section-number-4">5.1.2</span> Reliability</h4>
+<div class="outline-text-4" id="text-5-1-2">
+<p>
+A further consequence of the former is that our techniques operate as enforceable documentation. Even if we diligently documented all our preconditions and contextual requirements, we might forget to satisfy them. By encoding them in our types, we require adherence which eliminates all issues arising from accidentally failing to establish the appropriate context.
+</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</body>
+</html>

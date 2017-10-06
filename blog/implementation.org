@@ -1,0 +1,297 @@
+# -*- org-html-htmlize-output-type: nil; org-html-postamble: nil; -*-
+
+#+HTML_HEAD_EXTRA: <style>.meta { opacity: 0.75; margin-left: 1em; }</style>
+#+HTML_HEAD_EXTRA: <style>.accordion { border: 1px solid #ccc; box-shadow: 3px 3px 3px #eee; padding: 0em 1em; margin-left: 1em; }</style>
+#+HTML_HEAD_EXTRA: <style>.accordion-head { cursor: pointer; }</style>
+#+HTML_HEAD_EXTRA: <style>.accordion-head > p:first-child { font-variant: small-caps; }</style>
+#+HTML_HEAD_EXTRA: <style>.accordion-body { max-height: 0em; transform: scaleY(0); transition: transform 0.3s; transform-origin: top; }</style>
+#+HTML_HEAD_EXTRA: <style>.accordion-body > p:first-child { margin-top: 0; padding-top: 0.5em; }</style>
+#+HTML_HEAD_EXTRA: <style>.accordion-head > p:last-child { margin-bottom: 0; padding-bottom: 0.5em; }</style>
+#+HTML_HEAD_EXTRA: <style>.accordion-body:hover { max-height: 10000em; transform: scaleY(1); }</style>
+#+HTML_HEAD_EXTRA: <style>.accordion-head:hover + .accordion-body { max-height: 10000em; transform: scaleY(1); }</style>
+#+HTML_HEAD_EXTRA: <style>.trigger { border: 1px solid #ccc; box-shadow: 3px 3px 3px #eee; padding: 0.5em 1em; margin-left: 1em; }</style>
+#+HTML_HEAD_EXTRA: <style>.trigger:before { content: 'Trigger'; font-variant: small-caps; }</style>
+
+* Prior knowledge
+
+You have probably heard advice about breaking long functions into the composition of several smaller functions. (See, for example, [[https://dzone.com/articles/rule-30-%E2%80%93-when-method-class-or][When is a method, class or subsystem too big?]])
+
+You have also perhaps heard admonitions that we should [[https://en.wikipedia.org/wiki/Dependency_inversion_principle][depend on abstractions rather than concretions]].
+
+I contend that one goal underlying both pieces of advice is reducing the defect rate by limiting the number of incorrect implementations. When we break a long function into several smaller functions, each small function clearly has fewer implementations. But the collective whole does as well because we "pin" down type signatures at intermediate points. When we depend on abstractions, we prevent ourselves from accidentally depending on implementation details and thereby doing the wrong thing.
+
+* Implementation space
+
+Last time, we explored the idea that each type we declare permits only a certain number of inhabitants. Today, we'll extend this notion to function types. That is, each function type signature permits only a certain number of pure implementations (by "pure" we mean functions which don't fetch data over the network, generate random numbers, etc.---[[https://en.wikipedia.org/wiki/Pure_function][see here for more]]). We refer to this set of possible implementations as the "implementation space". Just like with "make illegal state unrepresentable", smaller implementation spaces are better (as long as they still permit the required business logic).
+
+* Goals
+
+- Understand the concept of "implementation space"
+  - You'll know that you're on your way when you feel comfortable recalling the meaning of the term and can bring examples to mind
+  - Check this goal off when you can generate and apply novel ways of reducing implementation space
+- Learn some techniques for reducing implementation space
+  - You'll know you're on your when you can complete the accompanying exercises
+  - Check this goal off when you're regularly applying these techniques in your day-to-day code
+
+* Another rigorous interlude
+
+(Again, skip this section if you'd like.)
+
+If you recall from last time, we found that when calculating cardinality of types unions corresponded to addition and tuples and records correspond to multiplication. For pure  functions, the corresponding operation is exponentiation.
+
+In symbols (with ~σ(τ)~ representing the cardinality of ~tau~):
+
+#+begin_src
+σ(τ => φ) = σ(φ)^σ(τ)
+
+We can start to convince ourselves it's true with examples like:
+
+σ(null) = 1
+σ(null => null) = σ(null)^σ(null) = 1^1
+
+function(x: null): null {
+  return in;
+}
+
+But wait. Can't we also write a function like the following with a conforming type signature:
+
+function(x: null): null {
+  const a = 'ab';
+  return null;
+}
+
+Yes, but we count it as morally equivalent because it is observationally
+indistinguishable (i.e. if we just treat the function as a black box, feed it
+inputs, and record its outputs) from the earlier function. When we talk about
+implementation space, we're really talking about the size of the input to output
+mapping table. Which in this case is 1.
+
+Another example:
+
+type Level = 'High' | 'Medium' | 'Low'
+σ(boolean) = 2
+σ(Level) = 3
+σ(boolean => Level) = σ(Level)^σ(boolean) = 3^2
+
+function(x: boolean): Level { return x ? 'High' : 'High'; }
+function(x: boolean): Level { return x ? 'High' : 'Medium'; }
+function(x: boolean): Level { return x ? 'High' : 'Low'; }
+function(x: boolean): Level { return x ? 'Medium' : 'High'; }
+function(x: boolean): Level { return x ? 'Medium' : 'Medium'; }
+function(x: boolean): Level { return x ? 'Medium' : 'Low'; }
+function(x: boolean): Level { return x ? 'Low' : 'High'; }
+function(x: boolean): Level { return x ? 'Low' : 'Medium'; }
+function(x: boolean): Level { return x ? 'Low' : 'Low'; }
+#+end_src
+
+#+begin_accordion
+#+begin_accordion-head
+Practice
+
+What's the cardinality of ~boolean => boolean~?
+#+end_accordion-head
+#+begin_accordion-body
+#+begin_src
+σ(boolean => boolean) = σ(boolean)^σ(boolean) = 2^2
+function(x: boolean): boolean { return x ? true : true; }
+function(x: boolean): boolean { return x ? true : false; }
+function(x: boolean): boolean { return x ? false : true; }
+function(x: boolean): boolean { return x ? false : false; }
+#+end_src
+#+end_accordion-body
+#+end_accordion
+
+Again, we strive for the type with the minimum cardinality which is still compatible with our business logic.
+
+* How
+
+** Make illegal state unrepresentable
+
+One obvious extension of last week is choosing input and output types that make illegal state unrepresentable.
+
+Compare ~promote: string => string~ to ~promote: Level -> Level~ (where ~type Level = 'High' | 'Medium' | 'Low'~).
+
+This change reduces our implementation space from an infinite size to a size of nine.
+
+** Use generics
+
+We've seen (at the end of the optional interlude) that a ~boolean => boolean~ has a cardinality of ~4~. If ~A~ is a type parameter, what's the cardinality of ~A => A~? That is:
+
+#+begin_src js
+const placeholder: any = undefined;
+/* How many functions like this can we implement? */
+function brillig<A>(a: A): A {
+  return placeholder;
+}
+/* It turns out, just one (as long as we disallow `typeof`): */
+function identity<A>(a: A): A {
+  return a;
+}
+#+end_src
+
+This is a general pattern. Because a function with a type parameter must work for any arbitrary type that may be substituted in, we can't do anything interesting with it, only shuffle it around. If we assume that ~A~ is a string and try to apply ~.length~, that won't work when our function is used in a different content and ~A~ is a ~boolean~.
+
+(I generally discourage ~typeof~ in code because it's not powerful enough to work with discriminated unions and it makes the sort of reasoning we're trying to perform here harder.)
+
+#+begin_accordion
+#+begin_accordion-head
+Practice
+
+How big is the implementation space for ~(string | null, string) => string~? Compare it to ~(A | null, A) => A~ where ~A~ is a type parameter.
+#+end_accordion-head
+#+begin_accordion-body
+# By intuition:
+#+begin_src js
+/* There are an infinite number of possible implementations for the first signature. Many of them are silly: */
+function slithy(option: string | null, string: string): string {
+  if (string === 'xyz') {
+    return string + '99';
+  } else {
+    return string;
+  }
+}
+/* On the other hand, there are only two implementations for the second: */
+function constant<A>(option: A | null, a: A): A {
+  return a;
+}
+function getOrElse<A>(option: A | null, a: A): A {
+  return option === null ? a : option;
+}
+
+(Working with type parameters in the formal version is a bit cumbersome so we omit it.)
+#+end_src
+#+end_accordion-body
+#+end_accordion
+
+#+begin_trigger
+Any time you're writing a library, it's worth thinking about how concrete your functionality needs to be.
+
+Any time you're writing a function that operates on a container (including things like ~?~ and ~Promise~), you should wonder whether you can make it generic.
+#+end_trigger
+
+** Project
+
+We'll start with a very artificial example:
+
+#+begin_src js
+
+/* If this is the functionality we want, our type signature is too permissive: */
+
+function leftPositive(numbers: [number, number]): boolean {
+  return (numbers[0] > 0);
+}
+
+/* We didn't use the second element of the tuple at all! Let's make that clear in our type signature: */
+
+function positive(number: number): boolean {
+  return number > 0;
+}
+#+end_src
+
+What we've done is project (in the [[https://en.wikipedia.org/wiki/Projection_(relational_algebra)][relational algebra sense]]) or "prune" fields that didn't play any part in our algorithm. We can see immediately from our cardinality rules that removing fields in a product type makes the type smaller and thus our implementation space smaller. If you skipped the interludes, work through a few examples where you remove fields from a record to convince yourself that the type always has fewer inhabitants after this operation.
+
+Let's try to make a more compelling example:
+
+#+begin_src js
+/* These aren't the focus now so we'll satisfy ourselves with mediocre types: */
+type Grade = number;
+type Timestamp = string;
+
+const placeholder: any = undefined;
+
+/* Suppose we want to calculate a user's final quiz grade based on their submitted attempts. Furthermore, suppose the correct business logic is to simply take the attempt with the maximum score. Our initial version might look like: */
+
+type QuizAttempt = { timestamp: Timestamp, score: Grade, quizId: string };
+function finalGrade(quizAttempts: Array<QuizAttempt>): ?Grade {
+  return placeholder;
+}
+/* But with a type signature like that, we permit many bad implementations: */
+function finalGradeBad(quizAttempts: Array<QuizAttempt>): ?Grade {
+  if (quizAttempts.length === 0) {
+    return 0.72;
+  } else {
+    if (quizAttempts[0].timestamp === '2017-05-10 12:00:00') {
+      return 1;
+    } else {
+      return 0;
+    }
+  }
+}
+
+/* A less permissive (and thus better) type signature would be: */
+function finalGradeGood(quizAttempts: Array<{ score: Grade }>): ?Grade {
+  if (quizAttempts.length === 0) {
+    return null;
+  } else {
+    return quizAttempts.reduce((acc, score) => acc.score > score.score ? acc : score);
+  }
+}
+#+end_src
+
+#+begin_trigger
+Every time you pass a record into a function, you should consider whether you actually need every field. In particular, you should be wary of passing around full records you get from the backend unaltered.
+#+end_trigger
+
+** Import only what you need
+
+We can move a level up and actually apply the same thinking at the module level. By importing only the functionality you need rather than every library you've ever heard of, you effectively reduce the implementation space of the module.
+
+#+begin_src js
+/* For example, when we see the following in the header of a module: */
+
+import request from 'request';
+
+/* we must pessimistically assume that module uses all capabilities provided by `request` until we actually examine the module code in detail.*/
+
+/* If we had this header instead: */
+
+import {get} from 'request';
+
+/* it's immediately clear that we only perform fetches in this module. */
+#+end_src
+
+#+begin_trigger
+You should at least consider this line of thought at every module import.
+#+end_trigger
+
+* Why
+
+** Code quality
+
+I'll claim three benefits of choosing type signatures with small implementation spaces.
+
+*** Documentation
+
+Choosing signatures with few implementations makes those signatures more informative.
+
+Go back and look through our examples. In each case, I contend that it's easier to understand the business logic when the type signature is appropriately narrow. Our ~finalGradeGood~ signature, for example, tells us that the calculation doesn't depend on submission date and that there's no quiz-specific logic. These possibilities remain in ~finalGradeBad~ so it tells us less. Our ~identity~ function's type assures us that we perform no operations on the ~A~ and merely shuffle it around.
+
+This intuition could be made more precise with an appeal to [[https://en.wikipedia.org/wiki/Pointwise_mutual_information][information theory]], but I'll just hand-wave in that direction for now.
+
+*** Reuse
+
+Function type signatures with a lower cardinality are more reusable.
+
+Go back and look through our examples. In each case, the functions can be used in more contexts. For example, ~finalGradeGood~ can be used even if we don't have the timestamps of the attempts at hand. If some API returned only the scores without corresponding timestamps, we'd have no choice but to rewrite ~finalGradeBad~. It should be obvious that ~identity<A>(a: A): A~ can be used in more places than any ~boolean => boolean~.
+
+To see why lower cardinality functions are more reusable (skippable if your intuition is already satisfied), we'll look at how cardinality affects reuse for both:
+- Input product types :: We can always project from a larger product to a smaller product by forgetting some fields. We usually can't reconstruct a larger product from a smaller product. (Think ~[number, number] => number~ vs ~number => [number, number]~.)
+- Output sum types :: We can always inject a smaller sum into a larger. We have no guarantee that we the other direction is safe. (Think ~number => ?number~ vs ~?number => number~.)
+
+*** Reliability
+
+Picking more restrictive type signatures means there are fewer ways for things to go wrong. We already saw some examples of bad implementations that were ruled out with better type signatures in ~finalGradeBad~ and ~slithy~.
+
+** Cognitive science
+
+#+begin_meta
+We're being a bit loose here about what we're considering cognitive science in an attempt to maintain thematic coherence.
+#+end_meta
+
+Research in the psychology of programming indicates that a major part of the program comprehension process involves finding and orienting via "beacons". These beacons are salient features of the program code that allow us to understand the program and fill in the gaps without having considered every facet in detail (Our working memory is painfully limited; it allows us to retain only 2--4 chunks at any given moment. So summarization is the name of the game.). Without having seen evidence on this exact claim, I'll suggest that type signatures are an excellent beacon. Thus, we should expect that providing informative type signatures has an outsize return on program comprehension.
+
+[[https://en.wikipedia.org/wiki/Human_reliability][Human reliability]] is a field which takes as a given that humans perform any and every action with some non-zero error rate. From this, it builds models for use in high-assurance fields like medicine and nuclear power. Without going too far down this road, we can make the same appeals. If we substitute one high relief error-prone decision (the type signature) for many low relief error-prone decisions (the implementation), we should expect the cumulative probability of error to decrease (assuming the probability of error on the first decision isn't radically higher).
+
+* Summary
+
+We extended the idea of cardinality of types to function types and then I advocated for picking function type signatures that are as "small" as possible. A couple of techniques that help us achieve this are the judicious use of generics and projecting product types to only contain the fields we need. This makes our code less defect-prone, more readable and more reusable.

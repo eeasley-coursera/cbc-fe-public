@@ -1,0 +1,308 @@
+# -*- org-html-htmlize-output-type: nil; org-html-postamble: nil; -*-
+
+#+HTML_HEAD_EXTRA: <style>.accordion { border: 1px solid #ccc; box-shadow: 3px 3px 3px #eee; padding: 0em 1em; margin-left: 1em; }</style>
+#+HTML_HEAD_EXTRA: <style>.accordion-head { cursor: pointer; }</style>
+#+HTML_HEAD_EXTRA: <style>.accordion-head > p:first-child { font-variant: small-caps; }</style>
+#+HTML_HEAD_EXTRA: <style>.accordion-body { max-height: 0em; transform: scaleY(0); transition: transform 0.3s; transform-origin: top; }</style>
+#+HTML_HEAD_EXTRA: <style>.accordion-body > p:first-child { margin-top: 0; padding-top: 0.5em; }</style>
+#+HTML_HEAD_EXTRA: <style>.accordion-head > p:last-child { margin-bottom: 0; padding-bottom: 0.5em; }</style>
+#+HTML_HEAD_EXTRA: <style>.accordion-body:hover { max-height: 10000em; transform: scaleY(1); }</style>
+#+HTML_HEAD_EXTRA: <style>.accordion-head:hover + .accordion-body { max-height: 10000em; transform: scaleY(1); }</style>
+#+HTML_HEAD_EXTRA: <style>.meta { opacity: 0.75; margin-left: 1em; }</style>
+#+HTML_HEAD_EXTRA: <style>.trigger { border: 1px solid #ccc; box-shadow: 3px 3px 3px #eee; padding: 0.5em 1em; margin-left: 1em; }</style>
+#+HTML_HEAD_EXTRA: <style>.trigger:before { content: 'Trigger'; font-variant: small-caps; }</style>
+#+HTML_HEAD_EXTRA: <style>.optional { border: 1px solid #ccc; box-shadow: 3px 3px 3px #eee; padding: 0.5em 1em; margin-left: 1em; opacity: 0.05; transition: opacity .25s ease-in-out; }</style>
+
+* Prior knowledge
+
+Have you ever found a bug in your code and felt certain that you had tests covering the buggy code? If you have, the problem was likely that your tests encoded the same wrong assumptions that led you to write buggy code.
+
+This is a problem property testing hopes to solve.
+
+* Property testing
+
+Ordinary unit tests take a unit of code under test (for simplicity, we'll assume a function) and evaluate it at several known values to check that it returns the correct, known results at those values. Clearly, this approach is very inexhaustive and highly sensitive to which values the tester happens to choose.
+
+Property testing instead uses a test framework to generate many, arbitrary values of the appropriate type and feed them through the function under test. Because the function is working with arbitrary values, we can't just check the output for correctness (unless we have a reference implementation---with unit tests, our manual offline computation on some fixed set of values acts as a partial reference implementation) without reimplementing the whole function a second time. Instead, we specify certain properties (which should be simpler to implement than the function under test) we expect our output to hold with respect to the input and check those.
+
+* Goals
+
+- Learn about property testing
+  - You'll know you're on your way when you understand the essential idea and can work through some examples
+  - Check this goal off when you're writing property tests in support of your ordinary code
+- Understand how property testing relates to our other correct by construction principles
+  - We'll have succeeded at this goal when we can fairly say that using property testing has increased our intuition for and usage of the other principles
+
+* Property testing examples
+
+Suppose we're told to implement a multiplication function (for some unfathomable reason).
+
+** Introductory
+
+#+begin_accordion
+#+begin_accordion-head
+Practice
+
+Try to come up with an implementation of ~multiply~ which satisfies the following test suite but isn't actually standard multiplication:
+
+#+begin_src js
+/* Placeholder: */
+const _: any = undefined;
+
+function multiply(left: number, right: number): number {
+  return _;
+}
+console.assert(multiply(0, 3) == 0, 'Multiplying by 0 didn\'t result in 0');
+console.assert(multiply(1, 2) == 2, 'Multiplying by 1 wasn\'t an identity');
+console.assert(multiply(3, 4) == 12, 'Wrong on 3 * 4');
+#+end_src
+#+end_accordion-head
+#+begin_accordion-body
+It's pretty easy. Here's one possible nonsensical implementation:
+
+#+begin_src js
+function multiply(left: number, right: number): number {
+  if (left === 0 && right === 3) {
+    return 0;
+  } else if (left === 1 && right == 2) {
+    return 2;
+  } else if (left === 3 && right === 4) {
+    return 12;
+  } else {
+    return -1;
+  }
+}
+#+end_src
+#+end_accordion-body
+#+end_accordion
+
+Now we'll bring in [[http://jsverify.github.io/][JSVerify]]---a property testing library:
+
+#+begin_accordion
+#+begin_accordion-head
+Practice
+
+Try to come up with a non-standard ~multiply~ which satisfies /this/ test suite:
+
+#+begin_src js
+import jsv from 'jsverify';
+
+/* Placeholder: */
+const _: any = undefined;
+
+function multiply(left: number, right: number): number {
+  return _;
+}
+/* This declaration basically says,
+"Given an arbitrary integer, multiplying by one just returns the integer."
+JSVerify's `checkForall` checks this property by generating many integers
+and running the declared function on them: */
+jsv.checkForall(jsv.integer, a =>
+  multiply(a, 1) === a
+);
+/* This declaration basically says,
+"Given an arbitrary integer, multiplying by zero returns zero."
+JSVerify's `checkForall` checks this property by generating many integers
+and running the declared function on them: */
+jsv.checkForall(jsv.integer, a =>
+  multiply(a, 0) === 0
+);
+/* Generates two arbitrary integers and checks for commutativity: */
+jsv.checkForall(jsv.integer, jsv.integer, (a, b) =>
+  multiply(a, b) === multiply(b, a)
+);
+/* Associativity: */
+jsv.checkForall(jsv.integer, jsv.integer, jsv.integer, (a, b, c) =>
+  multiply(multiply(a, b), c) === multiply(a, multiply(b, c))
+);
+/* Inverse: */
+jsv.checkForall(jsv.integer, a =>
+  mul7(a, -1) + a === 0
+);
+#+end_src
+#+end_accordion-head
+#+begin_accordion-body
+It's vastly harder to write an incorrect implementation! So much harder, in fact, that I won't even attempt it here.
+#+end_accordion-body
+#+end_accordion
+
+** More realistic
+
+Let's suppose we have to pick a winner based on a collection of scores:
+
+#+begin_src js
+import jsv from 'jsverify';
+
+type Candidate = {
+  name: string,
+  score: number,
+};
+
+/* We want value equality rather than reference equality: */
+function candidateEquality(left: Candidate, right: Candidate): boolean {
+  return left.name === right.name && left.score === right.score;
+}
+
+/* This looks like a superficially reasonable implementation: */
+function pickWinnerBad(candidates: Array<Candidate>): Candidate {
+  return candidates.reduce((acc, candidate) => (candidate.score >= acc.score ? candidate : acc));
+}
+
+/* Now, we have to tell JSVerify how to make an arbitrary `Candidate`: */
+const arbitraryCandidate = jsv.record({
+  name: jsv.asciinestring,
+  score: jsv.number(0, 1),
+});
+
+/* Our winner shouldn't depend on the input order of candidates: */
+jsv.checkForall(jsv.array(arbitraryCandidate), (candidates) => {
+  const result1 = pickWinnerBad(candidates);
+  const result2 = pickWinnerBad(candidates.reverse);
+  return candidateEquality(result1, result2);
+});
+
+/* Improving a winner's score should never make them lose: */
+jsv.checkForall(jsv.array(arbitraryCandidate), (candidates) => {
+  const result1 = pickWinnerBad(candidates);
+  const betterScore = Object.assign({}, result1, { score: Math.min(result1.score + 0.1, 1) });
+  // Remove winner and re-add with increased score
+  const alteredCandidates =
+    candidates
+      .filter(candidate => candidate.name !== result1.name || candidate.score !== result1.score)
+      .concat([betterScore]);
+  const result2 = pickWinnerBad(alteredCandidates);
+  return candidateEquality(result1, result2);
+});
+
+/* If there's only one candidate, they win: */
+jsv.checkForall(arbitraryCandidate, (candidate) => {
+  const result = pickWinnerBad([candidate]);
+  return candidateEquality(result, candidate);
+});
+
+/* But even these simple property tests reveal a myriad of problems:
+- A winner out of zero candidates makes no sense so our input collection should be non-empty
+- Our ordering test quickly reveals that we need to account for ties by returning a collection of winners
+  (without some tie-breaking criterion, any single winner will have to be chosen from the winning set arbitrarily)
+- We can eliminate the need for our ordering property entirely by using a `Set` instead of an `Array` 
+  (which inherently provides the unordered property for free) */
+
+
+/* Our fixed implementation: */
+function pickWinnerGood(candidates: NonEmptySet<Candidate>): NonEmptySet<Candidate> {
+  return candidates.valueArray().reduce((acc, candidate) => {
+    // By construction, all scores in the `acc` are the same.
+    const score = acc.valueArray()[0];
+    if (score === candidate.score) {
+      return acc.add_(candidate);
+    } else if (score < candidate.score) {
+      return NonEmptySet.singleton(candidate);
+    } else {
+      return acc;
+    }
+  }, NonEmptySet.singleton(candidates.valueArray()[0]));
+}
+
+/* A function for generating arbitrary `NonEmptySet`s: */
+const arbitraryNonEmptySet =
+  arbitraryElement => jsv.nonshrink(jsv.nearray(arbitraryElement).smap(array => new NonEmptySet(new Set(array))));
+
+/* Improving a winner's score should never make them lose: */
+jsv.checkForall(arbitraryNonEmptySet(arbitraryCandidate), (candidates) => {
+  const result1 = pickWinnerGood(candidates).valueArray()[0];
+  const betterScore = Object.assign({}, result1, { score: Math.min(result1.score + 0.1, 1) });
+  const candidatesWithoutWinner =
+    candidates
+      .filter(candidate => candidate.name !== result1.name || candidate.score !== result1.score);
+  const alteredCandidates =
+    candidates == null ? NonEmptySet.singleton(betterScore) : candidates.add_(betterScore);
+  const result2 = pickWinnerGood(alteredCandidates);
+  return result2.some(candidate => candidateEquality(candidate, result1));
+});
+
+/* If there's only one candidate, they win: */
+jsv.checkForall(arbitraryCandidate, (candidate) => {
+  const result = pickWinnerGood(NonEmptySet.singleton(candidate)).valueArray()[0];
+  return candidateEquality(result, candidate);
+});
+#+end_src
+
+#+begin_accordion
+#+begin_accordion-head
+Optional
+#+end_accordion-head
+#+begin_accordion-body
+Here's an implementation of our ~NonEmptySet~ used above. It's not very interesting but included for completeness.
+
+#+begin_src js
+class NonEmptySet<A> {
+  raw: Set<A>;
+  static valid(set: Set<A>): boolean {
+    return set.size !== 0;
+  }
+  values(): Iterator<A> {
+    return this.raw.values();
+  }
+  valueArray(): Array<A> {
+    return Array.from(this.values());
+  }
+  filter(predicate: A => boolean): ?NonEmptySet<A> {
+    return NonEmptySet.fromIterable(this.valueArray().filter(predicate));
+  }
+  // Non-mutating `add`
+  add_(a: A): NonEmptySet<A> {
+    return new NonEmptySet(new Set(this.valueArray().concat([a])));
+  }
+  some(predicate: A => boolean): boolean {
+    return this.valueArray().some(predicate);
+  }
+  every(predicate: A => boolean): boolean {
+    return this.valueArray().every(predicate);
+  }
+  size(): number {
+    return this.raw.size;
+  }
+  equals(eq: (left: A, right: A) => boolean, set: NonEmptySet<A>): boolean {
+    return this.size === set.size && this.every(l => set.some(r => eq(l, r)));
+  }
+  constructor(set: Set<A>): NonEmptySet<A> {
+    if (NonEmptySet.valid(set)) {
+      this.raw = set;
+      return this;
+    } else {
+      throw new TypeError('Empty set');
+    }
+  }
+  static singleton(a: A): NonEmptySet<A> {
+    return new NonEmptySet(new Set([a]));
+  }
+  static fromIterable(iter: Iterable<A>): ?NonEmptySet<A> {
+    return NonEmptySet.fromSet(new Set(iter));
+  }
+  static fromSet(set: Set<A>): ?NonEmptySet<A> {
+    try {
+      return new NonEmptySet(set);
+    } catch (e) {
+      if (e instanceof TypeError) {
+        return null;
+      } else {
+        throw e;
+      }
+    }
+  }
+}
+#+end_src
+#+end_accordion-body
+#+end_accordion
+
+* Relationship to prior material
+
+In the first content post, we talked about "making illegal state unrepresentable". Property testing can help build our intuition for what this means and rewards it. How? The simpler any given arbitrary generator is, the better. Any use of ~jsv.suchthat~ ("filters" another arbitrary generator) is a code smell and an encouragement to write a new type embedding this logic. We saw some of this with the switch from ~Array~ to ~Set~ in ~pickWinner~.
+
+In the second, we talked about choosing signatures such that our implementation spaces were small. Adding on property tests is another powerful way to constrain our implementation space. We saw this when our property tests ruled out implementations that our unit tests had allowed.
+
+In the third content post, we talked about avoiding global reasoning. Functions with implicit requirements fare poorly in a property testing setting. Our tests are much less likely to fail spuriously when we precisely encode, then necessarily satisfy, the requirements of our function. We didn't see any of this first hand, but it's not hard to imagine tests failing when you don't satisfy their preconditions.
+
+* Summary
+
+Property testing generates many arbitrary pieces of data to avoid a major pitfall of unit testing (only testing a few hand-picked data points). It also ties together much of the content we've talked about and gives us another angle on the material.

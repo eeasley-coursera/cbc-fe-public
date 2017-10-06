@@ -1,0 +1,381 @@
+# -*- org-html-htmlize-output-type: nil; org-html-postamble: nil; -*-
+
+#+HTML_HEAD_EXTRA: <style>.meta { opacity: 0.75; margin-left: 1em; }</style>
+#+HTML_HEAD_EXTRA: <style>.accordion { border: 1px solid #ccc; box-shadow: 3px 3px 3px #eee; padding: 0em 1em; margin-left: 1em; }</style>
+#+HTML_HEAD_EXTRA: <style>.accordion-head { cursor: pointer; }</style>
+#+HTML_HEAD_EXTRA: <style>.accordion-head > p:first-child { font-variant: small-caps; }</style>
+#+HTML_HEAD_EXTRA: <style>.accordion-body { max-height: 0em; transform: scaleY(0); transition: transform 0.3s; transform-origin: top; }</style>
+#+HTML_HEAD_EXTRA: <style>.accordion-body > p:first-child { margin-top: 0; padding-top: 0.5em; }</style>
+#+HTML_HEAD_EXTRA: <style>.accordion-head > p:last-child { margin-bottom: 0; padding-bottom: 0.5em; }</style>
+#+HTML_HEAD_EXTRA: <style>.accordion-body:hover { max-height: 10000em; transform: scaleY(1); }</style>
+#+HTML_HEAD_EXTRA: <style>.accordion-head:hover + .accordion-body { max-height: 10000em; transform: scaleY(1); }</style>
+#+HTML_HEAD_EXTRA: <style>.trigger { border: 1px solid #ccc; box-shadow: 3px 3px 3px #eee; padding: 0.5em 1em; margin-left: 1em; }</style>
+#+HTML_HEAD_EXTRA: <style>.trigger:before { content: 'Trigger'; font-variant: small-caps; }</style>
+
+* Prior knowledge
+
+You may have heard of "the billion dollar mistake". This is the name Tony Hoare gives to his introduction of the null reference in ALGOL. If you've ever experienced a ~NullPointerException~ or a ~Cannot read property of null~, you're a victim of this mistake.
+
+You may also have heard of admonitions against stringly typed programming. If you've ever written code like ~$('#foo')~ or ~el.append('<div>Hello</div>')~, you've been party to jQuery-induced stringly typed programming.
+
+The problem common to both is that we're permitted to pass around nonsensical data that we have no hope of handling---~null~'s that we can't ~render()~ and ~<div <table>>~ that can't be given an interpretation in the DOM. That is, we've made it possible---easy---to represent illegal states.
+
+* Make illegal state unrepresentable
+
+Instead, we should seek to make illegal state unrepresentable. That is, for each type, our ideal is that it simply /can't/ be used to describe things that are uninteresting or impossible by our business logic. Let's look at a few short examples to prime our intuition then try to make our slogan more precise.
+
+#+begin_src js
+/* If we want to track course progress, we might be tempted to do something like: */
+type CourseCompletionStateBad = string;
+
+/* But this permits an infinite (up to hardware limits) number of course states. Perhaps all we really need is: */
+type CourseCompletionStateGood = 'Unstarted' | 'Started' | 'Complete';
+
+/* Imagine we want to talk about essay assignments: */
+type AssignmentBad = {
+  prompt: string,
+  dueOn: string,
+};
+/* We'd do better with: */
+type AssignmentGood = {
+  prompt: string,
+  dueOn: Date,
+};
+/* Now it's impossible to be `dueOn: 'yellow'`. */
+#+end_src
+
+Don't worry too much about the details yet. As long the direction I'm gesturing in is now clear, we're ready to move on.
+
+#+begin_meta
+Any time you see a paragraph like this, it denotes meta content---some description of the underlying thinking or why ideas are presented as they are. The hope is that they predict and alleviate frustrations. If they don't, feel free to skip them.
+#+end_meta
+
+#+begin_meta
+Now's as good a time as any to address what will be an ongoing tension in the series. Strong evidence suggests that cognitive load impairs learning and that "more realistic" scenarios impose more cognitive load. This suggests that we should present examples which are minimal and isolated, focusing solely on the core technique. However, this creates the danger of examples which seem pointless and rarefied. Research confirms that motivation is /also/ import for learning outcomes. So the way I'll attempt to navigate this tension is by generally presenting simple unconvincing examples first before graduating to more difficult---but more realistic and motivating---examples.
+#+end_meta
+
+* Goals
+
+- Learn what the slogan "make illegal state unrepresentable" means
+  - You'll know you're on your way when you feel comfortable recalling the meaning of the slogan and can bring examples to mind
+  - Check this goal off when you can generate and apply novel ways of making illegal state unrepresentable
+- Learn some techniques for making illegal state unrepresentable
+  - You'll know you're on our way when you can complete the accompanying exercises
+  - Check this goal off when you're regularly applying these techniques in your day-to-day code
+
+* A rigorous interlude
+
+(Feel free to skip this section if it doesn't excite you. It's mathy but may assure some that this slogan isn't all hand-waving.)
+
+Our next step is to try to make the notion of a type's size more precise. Each type delimits a number of valid inhabitants. ~boolean~ has the two inhabitants ~true~ and ~false~. ~Natural~ has the inhabitants ~0~, ~1~, ~2~, ~3~, and so on.
+
+#+begin_meta
+Certain blocks will be highlighted and annotated like this so that they're easier to scan for.
+
+Hover over a practice block to see the answer.
+#+end_meta
+
+#+begin_accordion
+#+begin_accordion-head
+Practice
+
+How many inhabitants are in ~?boolean~?
+#+end_accordion-head
+#+begin_accordion-body
+4 (~?~ allows ~null~ /and/ ~undefined~.)
+#+end_accordion-body
+#+end_accordion
+
+The cardinality of primitive types like this is usually pretty intuitive, but how do we build to more complex types? There are two basic building blocks from which we'll build more complex types out of primitive types.
+
+The first is the union operation for types---~|~ in ~flow~. When we encounter this (as long as the types on either side are disjoint: https://flow.org/en/docs/types/unions/#toc-disjoint-unions), the total number of inhabitants is the sum of the number of inhabitants of the left hand type and the number of inhabitants of the right hand type. This is why union types are also sometimes called sum types. In symbols rather than words, where ~τ~ and ~φ~ are types and ~σ(τ)~ represents the cardinality of type ~τ~:
+
+#+begin_src
+σ(τ | φ) = σ(τ) + σ(φ)
+
+We can start to convince ourselves it's true with examples like:
+
+type boolean = true | false
+σ(true) = 1 \text{(This is why types like these are called singleton types.)}
+σ(false) = 1
+σ(boolean) = σ(true | false) = σ(true) + σ(false) = 1 + 1
+
+type ?boolean = boolean | null | void
+σ(null) = 1
+σ(void) = 1
+σ(?boolean) = σ(boolean | null | void) = σ(boolean) + σ(null) + σ(void) = 2 + 1 + 1
+#+end_src
+
+#+begin_accordion
+#+begin_accordion-head
+Practice
+
+List out all the inhabitants of ~?boolean~. Does it agree with our answer?
+
+Derive the cardinality for ~type CourseCompletionStateGood = 'Unstarted' | 'Started' | 'Complete'~.
+#+end_accordion-head
+#+begin_accordion-body
+#+begin_src js
+type ?boolean = true | false | null | undefined;
+σ(CourseCompletionStateGood) = σ('Unstarted') | σ('Started') | σ('Completed') = 1 + 1 + 1
+#+end_src
+#+end_accordion-body
+#+end_accordion
+
+The other major building block for complex types is what we use when we build records and tuples (A tuple of ~number~ and ~boolean~ looks like ~[number, boolean]~ in ~flow~.). In a tuple, the total number of inhabitants of the tuple is the product of the number of inhabitants of each side (hence, these are sometimes called product types). In symbols:
+
+#+begin_src
+σ([τ, φ]) = σ(τ) · σ(φ)
+
+We can start to convince ourselves it's true with examples like:
+
+σ([Void, ?boolean])
+  = σ(Void) · σ(?boolean)
+  = 1 · 4
+σ({ loggedIn: boolean, firstLogin: ?boolean })
+  = σ({ loggedIn: boolean }) · σ({ firstLogin: ?boolean })
+  = σ(boolean) · σ(?boolean)
+  = 2 · 4
+#+end_src
+
+#+begin_accordion
+#+begin_accordion-head
+Practice
+
+List out all the inhabitants of ~{ loggedIn: boolean, firstLogin: ?boolean }~. Does it agree with our answer?
+#+end_accordion-head
+#+begin_accordion-body
+#+begin_src js
+type { loggedIn: boolean, firstLogin: ?boolean } =
+  { loggedIn: true, firstLogin: true } |
+  { loggedIn: true, firstLogin: false } |
+  { loggedIn: true, firstLogin: null } |
+  { loggedIn: true, firstLogin: undefined } |
+  { loggedIn: false, firstLogin: true } |
+  { loggedIn: false, firstLogin: false } |
+  { loggedIn: false, firstLogin: null } |
+  { loggedIn: false, firstLogin: undefined };
+The 8 we see here agrees with our calculated answer.
+#+end_src
+#+end_accordion-body
+#+end_accordion
+
+These two building blocks are enough to build enormously complex types---lists, maps, enums, etc.
+
+Our next step is to make the concept of illegal state a bit more precise. We can take either an operational or semantic perspective. The operational perspective says that an illegal state is one which is never occupied during any execution trace of the properly-functioning software. (This is less question-begging than it sounds because we define proper functioning of the software in terms of inputs and outputs while states can be purely internal.) The semantic perspective says that an illegal state is one which cannot be given a coherent meaning in the underlying domain that our software represents. In either case, we'll represent these valid states of ~τ~ as ~{τ | β(τ)}~ where ~β~ defines validity according to our business logic. (There's a notational collision here: ~|~ for union in ~flow~ and ~|~ for "such that" in set-builder notation. We can disambiguate by noting that set builder ~|~ is always and only enclosed by ~{}~ rather than ~()~.)
+
+With this machinery, we can rephrase. Instead of "make illegal state unrepresentable", we can say "use the business-logic-compatible type with minimum cardinality". Or equivalently for a fixed business logic, maximize ~σ({τ | β(τ)}) / σ(τ)~. A value of ~1~ represents perfection with no illegal states remaining in the type.
+
+* How
+
+There are a variety of standard tricks for making illegal state unrepresentable that it will be useful to have in our bag.
+
+** Enums
+
+We already saw one example of this with ~CourseCompletionState~. Here are others:
+
+#+begin_src js
+type CourseTrackBad = string;
+const courseTrackBad: CourseTrackBad = 'Nonsense';
+/* Instead: */
+type CourseTrackGood = 'Honors' | 'Standard' | 'Audit';
+// This won't typecheck:
+// const courseTrackGood: CourseTrackGood = 'Nonsense';
+
+type StarRatingBad = number;
+const starRatingBad: StarRatingBad = -1.2;
+/* Instead: */
+type StarRatingGood = 1 | 2 | 3 | 4 | 5;
+// This won't typecheck:
+// const starRatingGood: StarRatingGood = -1.2;
+#+end_src
+
+The move here is to switch from a type like a string to a finite subset of that type which captures all the states we care about. This makes our intention clearer to the type checker and to readers.
+
+#+begin_meta
+Suppose we're convinced this technique is useful. It may still be difficult to put into practice because it's unfamiliar and we haven't yet built intuitions for when to use it. As a stepping stone on the way toward automaticity, this series will try to offer "action triggers" that prompt use of a technique. Through these we hope to transform the very hard (for the new initiate) task of "exercise your analytical abilities and judgment to find opportunities to apply any of a suite of techniques appropriately" to the simpler "remember these triggers and the corresponding technique for improvement". In the long term, this should build our capacity and familiarity and we'll eventually internalize these triggers and generate our own novel triggers and responses.
+#+end_meta
+
+#+begin_meta
+Relatedly, I'll suggest using these techniques more often than is comfortable when first starting out. In fact, by following this guidance I hope that you /will/ use these techniques too often. Ultimately, for all these techniques, you'll want to settle on usage habits that make intelligent trade offs. But that judgement will be unrefined in the beginning and the only way to be gain confidence you've found the proper line is to cross it repeatedly./
+#+end_meta
+
+#+begin_trigger
+Any time you ~switch~ or use nested ~if...else~ on a value whose type has infinitely many values (e.g. ~string~), there's a good chance you can make this change.
+#+end_trigger
+
+** Disjoint unions
+
+I'll rely on [[https://flow.org/en/docs/types/unions/#toc-disjoint-unions][~flow~'s explanation]] for the basic technique here and leap right into some useful possibilities this technique offers.
+
+#+begin_src js
+/* If a user can login via one of several methods, we might try: */
+type LoginIdBad = {
+  emailAddress?: string,
+  openIdSub?: string,
+  openIdAud?: string,
+};
+
+/* But this permits invalid values like: */
+const loginId1: LoginIdBad = {
+  emailAddress: 'hal@enfield.edu',
+  openIdSub: 'Hal',
+};
+const loginId2: LoginIdBad = {
+};
+
+/* We'd be better off with: */
+type LoginIdGood
+  = { tag: 'EmailAddress', value: string }
+  | { tag: 'OpenId', sub: string, aud: string };
+
+const loginId3: LoginIdGood = { tag: 'EmailAddress', value: 'hal@enfield.edu' };
+/* Will produce a type error if we uncomment: */
+// const loginId4: LoginIdGood = { tag: 'OpenId', value: 'hal@enfield.edu', openIdSub: 'Hal' };
+#+end_src
+
+The idea here is to make implicit cross-field correspondences explicit. In the original version, there was a hidden invariant that either ~emailAddress~ was absent and the other two fields were present or that ~emailAddress~ was present and the other two fields were absent. We can almost directly read off the previous sentence to explicitly encode these rules as a disjoint union.
+
+Another short example:
+
+#+begin_src js
+/* Suppose one must qualify for a course by either testing into it or taking a prerequisite course: */
+type CourseQualificationBad = {
+  prereqGrade?: number,
+  testGrade?: number,
+};
+/* But this permits invalid values like: */
+const courseQualificationsBad = {
+  prereqGrade: 1,
+  testGrade: 1,
+};
+/* Instead: */
+type Either<A, B> = { tag: 'Left', value: A } | { tag: 'Right', value: B };
+type CourseQualificationGood = Either<{ prereqGrade: number }, { testGrade: number }>;
+const courseQualificationsGood: CourseQualificationGood = { tag: 'Left', value: 1 };
+#+end_src
+
+This example has the same underlying logic as the previous example, but we declare a generic type ~Either~ that we can reuse over and over again in situations like this.
+
+#+begin_trigger
+Any time you see multiple nullable fields in a record, you should ask yourself, "Is it really true that every combination of null and non-null across these fields is valid?".
+#+end_trigger
+
+** Refined types
+
+#+begin_src js
+/* We might start with something like this: */
+type PersonBad = {
+  name: string,
+  age: number,
+};
+/* But this permits invalid values like: */
+const personBad: PersonBad = {
+  name: 'Hal Incandenza',
+  age: -1,
+};
+/* Instead: */
+class PositiveNumber {
+  raw: number;
+  constructor(num: number): PositiveNumber {
+    if (num >= 0) {
+      this.raw = num;
+      return this;
+    } else {
+      throw new TypeError('Number not positive');
+    }
+  }
+  static make(num: number): ?PositiveNumber {
+    try {
+      return new PositiveNumber(num);
+    } catch (e) {
+      if (e instanceof TypeError) {
+        return null;
+      } else {
+        throw e;
+      }
+    }
+  }
+}
+type PersonGood = {
+  name: string,
+  age: PositiveNumber,
+};
+const personGood: PersonGood = {
+  name: 'Hal Incandenza',
+  age: new PositiveNumber(17),
+};
+#+end_src
+
+Here, we'd like to restrict a type to some subset of its inhabitants. But the subset in infinite so we can't just use the enum technique outlined earlier. Instead, we create a class whose only constructor performs the check for us at runtime. Now, our class acts as a witness for the property we care about. The only way to get ~PositiveNumber~ is by passing the ~num >= 0~ check in the constructor so we can be confident that every ~PositiveNumber~ is greater than or equal to zero.
+
+#+begin_accordion
+#+begin_accordion-head
+Practice
+
+To convince yourself this technique works, try to construct a ~PositiveNumber~ that's less than 0. Absent dirty tricks, you should fail.
+#+end_accordion-head
+#+end_accordion
+
+Another example:
+
+#+begin_src js
+/* Suppose we want to track the history of IP addresses we've seen for a user: */
+type ScaryTrackingDataBad = {
+  knownIpAddresses: Array<string>,
+};
+/* But if we note the user's IP address on first page load, `knownIpAddresses` should never be empty. So instead: */
+class NonEmptyArray<A> {
+  raw: Array<A>;
+  constructor(array: Array<A>): NonEmptyArray<A> {
+    if (array.length !== 0) {
+      this.raw = array;
+      return this;
+    } else {
+      throw new TypeError('Array is empty');
+    }
+  }
+  static make(array: Array<A>): ?NonEmptyArray<A> {
+    try {
+      return new NonEmptyArray(array);
+    } catch (e) {
+      if (e instanceof TypeError) {
+        return null;
+      } else {
+        throw e;
+      }
+    }
+  }
+}
+type ScaryTrackingDataBad = {
+  knownIpAddresses: NonEmptyArray<string>,
+};
+#+end_src
+
+This non-empty array type turns out to be quite broadly useful because many array operations assume there's at least one element---~pop()~, ~reduce()~ without an initial value, etc. Over time, we'll build up a utility library of useful types like this that we can reuse again and again.
+
+#+begin_trigger
+It's hard to create an action trigger here because this technique will almost always be available and it'll be a matter of discretion when and to what extent you use it. Perhaps the best we can do to make this mechanical is commit a library of standard refined types to memory and be on the lookout for opportunities to use them.
+#+end_trigger
+
+* Why
+
+We'll argue in a couple modes: intuitive appeals about code quality and attempts to ground ourselves in cognitive science.
+
+** Code quality
+
+I'll claim three benefits:
+
+1. It should be uncontroversial that this approach necessarily rules out at least some defects---those arising from illegal states that we've made unrepresentable.
+2. This approach tends to improve the readability of our code. By encoding more invariants in the type system, we move knowledge from the private world of the implementer's mental model into a shared, manifest form---code. We no longer have to trust that our inheritors---or even ourselves at some later date!---will notice that a learner /must/ qualify for a course via a test or prerequisite course. 
+3. If we follow this policy comprehensively, it tends to push validations to the "outer shell" of the program. Because invalid inhabitants aren't even possible, we can't defer validations. Validating on our first receipt of data has the useful effect of clarifying all the central business logic since it has to deal with fewer invalidities and edge cases.
+
+** Cognitive science
+
+Humans are bad at understanding sets and their inhabitants. The availability heuristic suggests that we let our thoughts be dominated by immediate and prominent inhabitants of a category. Said another way, our default mode is to forget edge cases. An unstructured attempt to manage this deficiency relies upon prospective memory (When we tell ourselves to purchase an item the next time we go to the grocery store, we are attempting to leverage prospective memory.). That is, when we leave invalid states representable, we are implicitly asking our future selves to remember to appropriately handle these states at every use site. Research demonstrates that our prospective memory is notably imperfect with a failure rate in the tens of percents. Furthermore, research shows that the demands we place on prospective memory aren't free. They diminish our available supply of cognitive resources by affecting things like working memory.
+
+The type system approach to making illegal state unrepresentable I outlined here doesn't directly compensate for the availability heuristic (However, the action triggers and habits we talked about may help us get better at noticing these sorts of problems.). But it does ensure that any invalid states we discover need only be discovered once. Thereafter, these discoveries can be encoded in the type system, checked without fail, and forgotten, thereby freeing our cognitive resources for other tasks.
+
+* Summary
+
+I advocated for the slogan "make illegal state unrepresentable". This is about choosing types that, ideally, allow us to express only our business logic and nothing else. Pervasive use of enums, disjoint unions and refined types moves us toward this ideal. In addition to reducing defects, this can make our code more readable.

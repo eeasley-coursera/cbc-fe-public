@@ -1,0 +1,707 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<!-- 2017-10-06 Fri 10:02 -->
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>&lrm;</title>
+<meta name="generator" content="Org mode" />
+<meta name="author" content="Eric Easley" />
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: visible;
+    padding-top: 1.2em;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    background-color: white;
+    top: -10px;
+    right: 10px;
+    padding: 3px;
+    border: 1px solid black;
+  }
+  pre.src:hover:before { display: inline;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { width: 90%; }
+  /*]]>*/-->
+</style>
+<style>.meta { opacity: 0.75; margin-left: 1em; }</style>
+<style>.accordion { border: 1px solid #ccc; box-shadow: 3px 3px 3px #eee; padding: 0em 1em; margin-left: 1em; }</style>
+<style>.accordion-head { cursor: pointer; }</style>
+<style>.accordion-head > p:first-child { font-variant: small-caps; }</style>
+<style>.accordion-body { max-height: 0em; transform: scaleY(0); transition: transform 0.3s; transform-origin: top; }</style>
+<style>.accordion-body > p:first-child { margin-top: 0; padding-top: 0.5em; }</style>
+<style>.accordion-head > p:last-child { margin-bottom: 0; padding-bottom: 0.5em; }</style>
+<style>.accordion-body:hover { max-height: 10000em; transform: scaleY(1); }</style>
+<style>.accordion-head:hover + .accordion-body { max-height: 10000em; transform: scaleY(1); }</style>
+<style>.trigger { border: 1px solid #ccc; box-shadow: 3px 3px 3px #eee; padding: 0.5em 1em; margin-left: 1em; }</style>
+<style>.trigger:before { content: 'Trigger'; font-variant: small-caps; }</style>
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2017 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+</head>
+<body>
+<div id="content">
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org0dc74e5">1. Prior knowledge</a></li>
+<li><a href="#orgcb97836">2. Implementation space</a></li>
+<li><a href="#org3226736">3. Goals</a></li>
+<li><a href="#org2ee8331">4. Another rigorous interlude</a></li>
+<li><a href="#org70e7eb4">5. How</a>
+<ul>
+<li><a href="#org0c8b796">5.1. Make illegal state unrepresentable</a></li>
+<li><a href="#org31fccaf">5.2. Use generics</a></li>
+<li><a href="#orga032d43">5.3. Project</a></li>
+<li><a href="#orged8adbf">5.4. Import only what you need</a></li>
+</ul>
+</li>
+<li><a href="#orga9d2766">6. Why</a>
+<ul>
+<li><a href="#org6c5de42">6.1. Code quality</a>
+<ul>
+<li><a href="#orga7db15c">6.1.1. Documentation</a></li>
+<li><a href="#org572f638">6.1.2. Reuse</a></li>
+<li><a href="#org177a2b0">6.1.3. Reliability</a></li>
+</ul>
+</li>
+<li><a href="#org0f0e3a5">6.2. Cognitive science</a></li>
+</ul>
+</li>
+<li><a href="#orge8ada00">7. Summary</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org0dc74e5" class="outline-2">
+<h2 id="org0dc74e5"><span class="section-number-2">1</span> Prior knowledge</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+You have probably heard advice about breaking long functions into the composition of several smaller functions. (See, for example, <a href="https://dzone.com/articles/rule-30-%E2%80%93-when-method-class-or">When is a method, class or subsystem too big?</a>)
+</p>
+
+<p>
+You have also perhaps heard admonitions that we should <a href="https://en.wikipedia.org/wiki/Dependency_inversion_principle">depend on abstractions rather than concretions</a>.
+</p>
+
+<p>
+I contend that one goal underlying both pieces of advice is reducing the defect rate by limiting the number of incorrect implementations. When we break a long function into several smaller functions, each small function clearly has fewer implementations. But the collective whole does as well because we "pin" down type signatures at intermediate points. When we depend on abstractions, we prevent ourselves from accidentally depending on implementation details and thereby doing the wrong thing.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgcb97836" class="outline-2">
+<h2 id="orgcb97836"><span class="section-number-2">2</span> Implementation space</h2>
+<div class="outline-text-2" id="text-2">
+<p>
+Last time, we explored the idea that each type we declare permits only a certain number of inhabitants. Today, we'll extend this notion to function types. That is, each function type signature permits only a certain number of pure implementations (by "pure" we mean functions which don't fetch data over the network, generate random numbers, etc.---<a href="https://en.wikipedia.org/wiki/Pure_function">see here for more</a>). We refer to this set of possible implementations as the "implementation space". Just like with "make illegal state unrepresentable", smaller implementation spaces are better (as long as they still permit the required business logic).
+</p>
+</div>
+</div>
+
+<div id="outline-container-org3226736" class="outline-2">
+<h2 id="org3226736"><span class="section-number-2">3</span> Goals</h2>
+<div class="outline-text-2" id="text-3">
+<ul class="org-ul">
+<li>Understand the concept of "implementation space"
+<ul class="org-ul">
+<li>You'll know that you're on your way when you feel comfortable recalling the meaning of the term and can bring examples to mind</li>
+<li>Check this goal off when you can generate and apply novel ways of reducing implementation space</li>
+</ul></li>
+<li>Learn some techniques for reducing implementation space
+<ul class="org-ul">
+<li>You'll know you're on your when you can complete the accompanying exercises</li>
+<li>Check this goal off when you're regularly applying these techniques in your day-to-day code</li>
+</ul></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org2ee8331" class="outline-2">
+<h2 id="org2ee8331"><span class="section-number-2">4</span> Another rigorous interlude</h2>
+<div class="outline-text-2" id="text-4">
+<p>
+(Again, skip this section if you'd like.)
+</p>
+
+<p>
+If you recall from last time, we found that when calculating cardinality of types unions corresponded to addition and tuples and records correspond to multiplication. For pure  functions, the corresponding operation is exponentiation.
+</p>
+
+<p>
+In symbols (with <code>σ(τ)</code> representing the cardinality of <code>tau</code>):
+</p>
+
+<pre class="example">
+σ(τ =&gt; φ) = σ(φ)^σ(τ)
+
+We can start to convince ourselves it's true with examples like:
+
+σ(null) = 1
+σ(null =&gt; null) = σ(null)^σ(null) = 1^1
+
+function(x: null): null {
+  return in;
+}
+
+But wait. Can't we also write a function like the following with a conforming type signature:
+
+function(x: null): null {
+  const a = 'ab';
+  return null;
+}
+
+Yes, but we count it as morally equivalent because it is observationally
+indistinguishable (i.e. if we just treat the function as a black box, feed it
+inputs, and record its outputs) from the earlier function. When we talk about
+implementation space, we're really talking about the size of the input to output
+mapping table. Which in this case is 1.
+
+Another example:
+
+type Level = 'High' | 'Medium' | 'Low'
+σ(boolean) = 2
+σ(Level) = 3
+σ(boolean =&gt; Level) = σ(Level)^σ(boolean) = 3^2
+
+function(x: boolean): Level { return x ? 'High' : 'High'; }
+function(x: boolean): Level { return x ? 'High' : 'Medium'; }
+function(x: boolean): Level { return x ? 'High' : 'Low'; }
+function(x: boolean): Level { return x ? 'Medium' : 'High'; }
+function(x: boolean): Level { return x ? 'Medium' : 'Medium'; }
+function(x: boolean): Level { return x ? 'Medium' : 'Low'; }
+function(x: boolean): Level { return x ? 'Low' : 'High'; }
+function(x: boolean): Level { return x ? 'Low' : 'Medium'; }
+function(x: boolean): Level { return x ? 'Low' : 'Low'; }
+</pre>
+
+<div class="accordion">
+<div class="accordion-head">
+<p>
+Practice
+</p>
+
+<p>
+What's the cardinality of <code>boolean =&gt; boolean</code>?
+</p>
+
+</div>
+<div class="accordion-body">
+<pre class="example">
+σ(boolean =&gt; boolean) = σ(boolean)^σ(boolean) = 2^2
+function(x: boolean): boolean { return x ? true : true; }
+function(x: boolean): boolean { return x ? true : false; }
+function(x: boolean): boolean { return x ? false : true; }
+function(x: boolean): boolean { return x ? false : false; }
+</pre>
+
+</div>
+
+</div>
+
+<p>
+Again, we strive for the type with the minimum cardinality which is still compatible with our business logic.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org70e7eb4" class="outline-2">
+<h2 id="org70e7eb4"><span class="section-number-2">5</span> How</h2>
+<div class="outline-text-2" id="text-5">
+</div>
+<div id="outline-container-org0c8b796" class="outline-3">
+<h3 id="org0c8b796"><span class="section-number-3">5.1</span> Make illegal state unrepresentable</h3>
+<div class="outline-text-3" id="text-5-1">
+<p>
+One obvious extension of last week is choosing input and output types that make illegal state unrepresentable.
+</p>
+
+<p>
+Compare <code>promote: string =&gt; string</code> to <code>promote: Level -&gt; Level</code> (where <code>type Level = 'High' | 'Medium' | 'Low'</code>).
+</p>
+
+<p>
+This change reduces our implementation space from an infinite size to a size of nine.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org31fccaf" class="outline-3">
+<h3 id="org31fccaf"><span class="section-number-3">5.2</span> Use generics</h3>
+<div class="outline-text-3" id="text-5-2">
+<p>
+We've seen (at the end of the optional interlude) that a <code>boolean =&gt; boolean</code> has a cardinality of <code>4</code>. If <code>A</code> is a type parameter, what's the cardinality of <code>A =&gt; A</code>? That is:
+</p>
+
+<div class="org-src-container">
+<pre><code class="src src-js">const placeholder: any = undefined;
+/* How many functions like this can we implement? */
+function brillig&lt;A&gt;(a: A): A {
+  return placeholder;
+}
+/* It turns out, just one (as long as we disallow `typeof`): */
+function identity&lt;A&gt;(a: A): A {
+  return a;
+}
+</code></pre>
+</div>
+
+<p>
+This is a general pattern. Because a function with a type parameter must work for any arbitrary type that may be substituted in, we can't do anything interesting with it, only shuffle it around. If we assume that <code>A</code> is a string and try to apply <code>.length</code>, that won't work when our function is used in a different content and <code>A</code> is a <code>boolean</code>.
+</p>
+
+<p>
+(I generally discourage <code>typeof</code> in code because it's not powerful enough to work with discriminated unions and it makes the sort of reasoning we're trying to perform here harder.)
+</p>
+
+<div class="accordion">
+<div class="accordion-head">
+<p>
+Practice
+</p>
+
+<p>
+How big is the implementation space for <code>(string | null, string) =&gt; string</code>? Compare it to <code>(A | null, A) =&gt; A</code> where <code>A</code> is a type parameter.
+</p>
+
+</div>
+<div class="accordion-body">
+<div class="org-src-container">
+<pre><code class="src src-js">/* There are an infinite number of possible implementations for the first signature. Many of them are silly: */
+function slithy(option: string | null, string: string): string {
+  if (string === 'xyz') {
+    return string + '99';
+  } else {
+    return string;
+  }
+}
+/* On the other hand, there are only two implementations for the second: */
+function constant&lt;A&gt;(option: A | null, a: A): A {
+  return a;
+}
+function getOrElse&lt;A&gt;(option: A | null, a: A): A {
+  return option === null ? a : option;
+}
+
+(Working with type parameters in the formal version is a bit cumbersome so we omit it.)
+</code></pre>
+</div>
+
+</div>
+
+</div>
+
+<div class="trigger">
+<p>
+Any time you're writing a library, it's worth thinking about how concrete your functionality needs to be.
+</p>
+
+<p>
+Any time you're writing a function that operates on a container (including things like <code>?</code> and <code>Promise</code>), you should wonder whether you can make it generic.
+</p>
+
+</div>
+</div>
+</div>
+
+<div id="outline-container-orga032d43" class="outline-3">
+<h3 id="orga032d43"><span class="section-number-3">5.3</span> Project</h3>
+<div class="outline-text-3" id="text-5-3">
+<p>
+We'll start with a very artificial example:
+</p>
+
+<div class="org-src-container">
+<pre><code class="src src-js">
+/* If this is the functionality we want, our type signature is too permissive: */
+
+function leftPositive(numbers: [number, number]): boolean {
+  return (numbers[0] &gt; 0);
+}
+
+/* We didn't use the second element of the tuple at all! Let's make that clear in our type signature: */
+
+function positive(number: number): boolean {
+  return number &gt; 0;
+}
+</code></pre>
+</div>
+
+<p>
+What we've done is project (in the <a href="https://en.wikipedia.org/wiki/Projection_(relational_algebra)">relational algebra sense</a>) or "prune" fields that didn't play any part in our algorithm. We can see immediately from our cardinality rules that removing fields in a product type makes the type smaller and thus our implementation space smaller. If you skipped the interludes, work through a few examples where you remove fields from a record to convince yourself that the type always has fewer inhabitants after this operation.
+</p>
+
+<p>
+Let's try to make a more compelling example:
+</p>
+
+<div class="org-src-container">
+<pre><code class="src src-js">/* These aren't the focus now so we'll satisfy ourselves with mediocre types: */
+type Grade = number;
+type Timestamp = string;
+
+const placeholder: any = undefined;
+
+/* Suppose we want to calculate a user's final quiz grade based on their submitted attempts. Furthermore, suppose the correct business logic is to simply take the attempt with the maximum score. Our initial version might look like: */
+
+type QuizAttempt = { timestamp: Timestamp, score: Grade, quizId: string };
+function finalGrade(quizAttempts: Array&lt;QuizAttempt&gt;): ?Grade {
+  return placeholder;
+}
+/* But with a type signature like that, we permit many bad implementations: */
+function finalGradeBad(quizAttempts: Array&lt;QuizAttempt&gt;): ?Grade {
+  if (quizAttempts.length === 0) {
+    return 0.72;
+  } else {
+    if (quizAttempts[0].timestamp === '2017-05-10 12:00:00') {
+      return 1;
+    } else {
+      return 0;
+    }
+  }
+}
+
+/* A less permissive (and thus better) type signature would be: */
+function finalGradeGood(quizAttempts: Array&lt;{ score: Grade }&gt;): ?Grade {
+  if (quizAttempts.length === 0) {
+    return null;
+  } else {
+    return quizAttempts.reduce((acc, score) =&gt; acc.score &gt; score.score ? acc : score);
+  }
+}
+</code></pre>
+</div>
+
+<div class="trigger">
+<p>
+Every time you pass a record into a function, you should consider whether you actually need every field. In particular, you should be wary of passing around full records you get from the backend unaltered.
+</p>
+
+</div>
+</div>
+</div>
+
+<div id="outline-container-orged8adbf" class="outline-3">
+<h3 id="orged8adbf"><span class="section-number-3">5.4</span> Import only what you need</h3>
+<div class="outline-text-3" id="text-5-4">
+<p>
+We can move a level up and actually apply the same thinking at the module level. By importing only the functionality you need rather than every library you've ever heard of, you effectively reduce the implementation space of the module.
+</p>
+
+<div class="org-src-container">
+<pre><code class="src src-js">/* For example, when we see the following in the header of a module: */
+
+import request from 'request';
+
+/* we must pessimistically assume that module uses all capabilities provided by `request` until we actually examine the module code in detail.*/
+
+/* If we had this header instead: */
+
+import {get} from 'request';
+
+/* it's immediately clear that we only perform fetches in this module. */
+</code></pre>
+</div>
+
+<div class="trigger">
+<p>
+You should at least consider this line of thought at every module import.
+</p>
+
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orga9d2766" class="outline-2">
+<h2 id="orga9d2766"><span class="section-number-2">6</span> Why</h2>
+<div class="outline-text-2" id="text-6">
+</div>
+<div id="outline-container-org6c5de42" class="outline-3">
+<h3 id="org6c5de42"><span class="section-number-3">6.1</span> Code quality</h3>
+<div class="outline-text-3" id="text-6-1">
+<p>
+I'll claim three benefits of choosing type signatures with small implementation spaces.
+</p>
+</div>
+
+<div id="outline-container-orga7db15c" class="outline-4">
+<h4 id="orga7db15c"><span class="section-number-4">6.1.1</span> Documentation</h4>
+<div class="outline-text-4" id="text-6-1-1">
+<p>
+Choosing signatures with few implementations makes those signatures more informative.
+</p>
+
+<p>
+Go back and look through our examples. In each case, I contend that it's easier to understand the business logic when the type signature is appropriately narrow. Our <code>finalGradeGood</code> signature, for example, tells us that the calculation doesn't depend on submission date and that there's no quiz-specific logic. These possibilities remain in <code>finalGradeBad</code> so it tells us less. Our <code>identity</code> function's type assures us that we perform no operations on the <code>A</code> and merely shuffle it around.
+</p>
+
+<p>
+This intuition could be made more precise with an appeal to <a href="https://en.wikipedia.org/wiki/Pointwise_mutual_information">information theory</a>, but I'll just hand-wave in that direction for now.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org572f638" class="outline-4">
+<h4 id="org572f638"><span class="section-number-4">6.1.2</span> Reuse</h4>
+<div class="outline-text-4" id="text-6-1-2">
+<p>
+Function type signatures with a lower cardinality are more reusable.
+</p>
+
+<p>
+Go back and look through our examples. In each case, the functions can be used in more contexts. For example, <code>finalGradeGood</code> can be used even if we don't have the timestamps of the attempts at hand. If some API returned only the scores without corresponding timestamps, we'd have no choice but to rewrite <code>finalGradeBad</code>. It should be obvious that <code>identity&lt;A&gt;(a: A): A</code> can be used in more places than any <code>boolean =&gt; boolean</code>.
+</p>
+
+<p>
+To see why lower cardinality functions are more reusable (skippable if your intuition is already satisfied), we'll look at how cardinality affects reuse for both:
+</p>
+<dl class="org-dl">
+<dt>Input product types</dt><dd>We can always project from a larger product to a smaller product by forgetting some fields. We usually can't reconstruct a larger product from a smaller product. (Think <code>[number, number] =&gt; number</code> vs <code>number =&gt; [number, number]</code>.)</dd>
+<dt>Output sum types</dt><dd>We can always inject a smaller sum into a larger. We have no guarantee that we the other direction is safe. (Think <code>number =&gt; ?number</code> vs <code>?number =&gt; number</code>.)</dd>
+</dl>
+</div>
+</div>
+
+<div id="outline-container-org177a2b0" class="outline-4">
+<h4 id="org177a2b0"><span class="section-number-4">6.1.3</span> Reliability</h4>
+<div class="outline-text-4" id="text-6-1-3">
+<p>
+Picking more restrictive type signatures means there are fewer ways for things to go wrong. We already saw some examples of bad implementations that were ruled out with better type signatures in <code>finalGradeBad</code> and <code>slithy</code>.
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org0f0e3a5" class="outline-3">
+<h3 id="org0f0e3a5"><span class="section-number-3">6.2</span> Cognitive science</h3>
+<div class="outline-text-3" id="text-6-2">
+<div class="meta">
+<p>
+We're being a bit loose here about what we're considering cognitive science in an attempt to maintain thematic coherence.
+</p>
+
+</div>
+
+<p>
+Research in the psychology of programming indicates that a major part of the program comprehension process involves finding and orienting via "beacons". These beacons are salient features of the program code that allow us to understand the program and fill in the gaps without having considered every facet in detail (Our working memory is painfully limited; it allows us to retain only 2&#x2013;4 chunks at any given moment. So summarization is the name of the game.). Without having seen evidence on this exact claim, I'll suggest that type signatures are an excellent beacon. Thus, we should expect that providing informative type signatures has an outsize return on program comprehension.
+</p>
+
+<p>
+<a href="https://en.wikipedia.org/wiki/Human_reliability">Human reliability</a> is a field which takes as a given that humans perform any and every action with some non-zero error rate. From this, it builds models for use in high-assurance fields like medicine and nuclear power. Without going too far down this road, we can make the same appeals. If we substitute one high relief error-prone decision (the type signature) for many low relief error-prone decisions (the implementation), we should expect the cumulative probability of error to decrease (assuming the probability of error on the first decision isn't radically higher).
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orge8ada00" class="outline-2">
+<h2 id="orge8ada00"><span class="section-number-2">7</span> Summary</h2>
+<div class="outline-text-2" id="text-7">
+<p>
+We extended the idea of cardinality of types to function types and then I advocated for picking function type signatures that are as "small" as possible. A couple of techniques that help us achieve this are the judicious use of generics and projecting product types to only contain the fields we need. This makes our code less defect-prone, more readable and more reusable.
+</p>
+</div>
+</div>
+</div>
+</body>
+</html>

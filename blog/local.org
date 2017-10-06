@@ -1,0 +1,376 @@
+# -*- org-html-htmlize-output-type: nil; org-html-postamble: nil; -*-
+
+#+HTML_HEAD_EXTRA: <style>.meta { opacity: 0.75; margin-left: 1em; }</style>
+#+HTML_HEAD_EXTRA: <style>.accordion { border: 1px solid #ccc; box-shadow: 3px 3px 3px #eee; padding: 0em 1em; margin-left: 1em; }</style>
+#+HTML_HEAD_EXTRA: <style>.accordion-head { cursor: pointer; }</style>
+#+HTML_HEAD_EXTRA: <style>.accordion-head > p:first-child { font-variant: small-caps; }</style>
+#+HTML_HEAD_EXTRA: <style>.accordion-body { max-height: 0em; transform: scaleY(0); transition: transform 0.3s; transform-origin: top; }</style>
+#+HTML_HEAD_EXTRA: <style>.accordion-body > p:first-child { margin-top: 0; padding-top: 0.5em; }</style>
+#+HTML_HEAD_EXTRA: <style>.accordion-head > p:last-child { margin-bottom: 0; padding-bottom: 0.5em; }</style>
+#+HTML_HEAD_EXTRA: <style>.accordion-body:hover { max-height: 10000em; transform: scaleY(1); }</style>
+#+HTML_HEAD_EXTRA: <style>.accordion-head:hover + .accordion-body { max-height: 10000em; transform: scaleY(1); }</style>
+#+HTML_HEAD_EXTRA: <style>.trigger { border: 1px solid #ccc; box-shadow: 3px 3px 3px #eee; padding: 0.5em 1em; margin-left: 1em; }</style>
+#+HTML_HEAD_EXTRA: <style>.trigger:before { content: 'Trigger'; font-variant: small-caps; }</style>
+
+* Prior knowledge
+
+Flawless concurrent programs are legendarily hard. Some race condition, deadlock or resource starvation creeps in and your program no longer does what you expect.
+
+Have you ever traced a bug only to find it originates with "impossible" data in the database? A negative age, a payment pointing to a missing user, etc. Such occasions renew our appreciation for foreign key constraints, check constraints and other strong checks for data integrity.
+
+Many best practices guides also advise that global mutable state is to be strenuously avoided. For example, [[https://softwareengineering.stackexchange.com/questions/148108/why-is-global-state-so-evil][here]] or [[http://wiki.c2.com/?GlobalVariablesAreBad][here]].
+
+I claim that there is an underlying commonality to these examples. In each case, we encounter errors because we must perform "global" reasoning. When working with concurrency, many systems require us to try to mentally explore the space of all possible execution interleavings. When ensuring that data meets integrity constraints, we are required to think through all insert and update paths hitting the database and make sure they conform to our rules in all cases. Working with global mutable state successfully requires us to know which other functions have and haven't been called before this function.
+
+* Global vs local reasoning
+
+Local reasoning is called for when we can infer the correctness of a piece of code only from its local context---e.g. determining the correctness of function only by examining its body. When we must understand some operational context beyond the immediate code (e.g. which functions have been previously executed, what data is in the database), that's global reasoning (Though, of course, there's really a spectrum between local and global reasoning depending on how much context must be understood.).
+
+#+begin_accordion
+#+begin_accordion-head
+Practice
+
+What other code do you need to see to understand the behavior of the following?
+
+#+begin_src js
+function add(left: number, right: number): number {
+  return left + right;
+}
+#+end_src
+#+end_accordion-head
+#+begin_accordion-body
+None. It's a prime example of local reasoning. There are no side effects---it's a pure function of its arguments.
+#+end_accordion-body
+#+end_accordion
+
+#+begin_accordion
+#+begin_accordion-head
+Practice
+
+What other code do you need to see to understand the behavior of the following?
+#+begin_src js
+function conditionalIncrement(num: number): number {
+  return this.increment ? num + 1 : num;
+}
+#+end_src
+#+end_accordion-head
+#+begin_accordion-body
+At a minimum, you need to understand all other code that interacts with ~this.increment~. This is global reasoning.
+#+end_accordion-body
+#+end_accordion
+
+* Goals
+
+- Learn the distinction between global and local reasoning
+  - You'll know you're on the way when you can easily recall the definition and can bring examples to mind
+  - Check this goal off when you can generate and apply novel ways of transforming problems of global reasoning into problems of local reasoning
+- Learn some techniques for transforming problems of global reasoning into problems of local reasoning
+
+* How
+
+** Smart constructors over validations
+
+We've already seen some examples of this next technique though we phrased it in terms of "make illegal state unrepresentable" rather than global versus local reasoning.
+
+#+begin_src js
+/* This will be shared across both implementations: */
+const slugRegex = /^[a-z-]+$/;
+
+/* This is, arguably, standard practice. We declare a class which declares its validations: */
+class SlugBad {
+  slug: string;
+  constructor(str: string) {
+    this.slug = str;
+    return this;
+  }
+  validateSlug(): boolean {
+    return slugRegex.test(this.slug);
+  }
+}
+
+/* But it's trivial to have data which doesn't satisfy the validations: */
+console.log(new SlugBad('ABC'));
+
+/* Instead, we embed the validation in the constructor: */
+class SlugGood {
+  raw: string;
+  constructor(str: string): SlugGood {
+    if (slugRegex.test(str)) {
+      this.raw = str;
+      return this;
+    } else {
+      throw new TypeError('Not a valid slug');
+    }
+  }
+  static make(str: string): ?SlugGood {
+    try {
+      return new SlugGood(str);
+    } catch (e) {
+      if (e instanceof TypeError) {
+        return null;
+      } else {
+        throw e;
+      }
+    }
+  }
+}
+
+console.log(SlugGood.make('abc'));
+#+end_src
+
+With the second approach, the only way to construct a ~SlugGood~ is through a constructor which performs the validation (these are sometimes called "smart constructors"). Thus, we can be assured that if we have a ~SlugGood~ the underlying data satisfies our criteria.
+
+To be explicit, this is a useful shift from a problem of global reasoning to a problem of local reasoning. In the first setup, if we have a ~SlugBad~ and we need to be sure the slug really is valid, we have two choices:
+- We can validate again (and again and again) at each use site which leads to a proliferation of error handling code and duplication of possibly expensive checks.
+- We can try to trace the ~SlugBad~ to its point of origin and ensure that validation was performed somewhere along the way.
+The latter is a clear demand for global reasoning and thus very hard to execute flawlessly. If we rely on it, we'll almost surely forget to validate along some code paths some of the time.
+
+~SlugGood~ to the rescue. Why does this work? With ~SlugBad~ we have an implicit piece of state---whether the validation has been performed---which we must track manually. ~SlugGood~ makes this piece of state explicit in the type system via the transition from ~string~ to ~SlugGood~ and pushes the burden off onto our type checker. We'll see this is a generally applicable pattern in solving problems of global reasoning (make the type checker do the global reasoning instead by making something explicit).
+
+** Wrappers
+
+Here's another very simple technique that can pay off well. The basic technique is just to "wrap" types to reflect semantics.
+
+#+begin_src js
+class Name {
+  name: string;
+  constructor(str: string) {
+    this.name = str;
+    return this;
+  }
+}
+#+end_src
+
+Why would this be useful? Aside from the obvious and relatively small benefit of ensuring that we don't accidentally mix up various strings, we can apply this technique in more interesting scenarios. Suppose we have two versions of course slug on the backend (the backend wants to change the serialization format, for example)---the original version and the one we're trying to migrate to. During the migration, we'll also end up with two sets of functions for interacting with these APIs:
+
+#+begin_src js
+/* Placeholder */
+const _: any = undefined;
+
+type CourseDescription = {
+  // ...
+};
+
+function authoringUpdateCourseBad(slug: string, course: CourseDescription): void {
+  return _;
+}
+
+function loadCourseDescriptionBad(slug: string): CourseDescription {
+  return _;
+}
+
+/* And on and on for all functionality depending on these APIs. */
+
+function authoringUpdateCourseV2Bad(slug: string, course: CourseDescription): void {
+  return _;
+}
+
+function loadCourseDescriptionV2Bad(slug: string): void {
+  return _;
+}
+
+/* And on and on for all functionality depending on these APIs. */
+#+end_src
+
+But what happens when the backend wants to finally remove support for the old, deprecated slug format? How can we be sure we no longer depend on it? The only way is to search through our whole code base and hope we find all use sites. This is simultaneously tedious and error-prone.
+
+A better approach might look like:
+
+#+begin_src js
+/* Placeholder */
+const _: any = undefined;
+
+type CourseDescription = {
+  // ...
+};
+class Slug {
+  slug: string;
+  constructor(str: string) {
+    this.slug = str;
+    return this;
+  }
+}
+class SlugV2 {
+  slug: string;
+  constructor(str: string) {
+    this.slug = str;
+    return this;
+  }
+}
+
+function authoringUpdateCourseGood(slug: Slug, course: CourseDescription): void {
+  return _;
+}
+
+function loadCourseDescriptionGood(slug: Slug): void {
+  return _;
+}
+
+function authoringUpdateCourseV2Good(slug: SlugV2, course: CourseDescription): void {
+  return _;
+}
+
+function loadCourseDescriptionV2Good(slug: SlugV2): void {
+  return _;
+}
+#+end_src
+
+Now, the problem of removing dependence on the old slug format is trivial. We simply delete the original ~Slug~ and whatever doesn't compile must go.
+
+Again, we see that we solved a problem of global reasoning by making implicit information explicit in the type system. This time we made our slug version explicit my having a separate type for each version (even though the classes don't do anything interesting on their own!).
+
+** Witness
+
+Sometimes the implicit information we want to make explicit isn't "attached" to any type. In this case, we will have a simple value which functions as a "witness" that a side effect has been performed. A very simple example:
+
+#+begin_src js
+/* Placeholder */
+const _: any = undefined;
+
+/* Perform some effectful operation (e.g. writing to the database, sending an email): */
+function doBrilligBad(slithyId: number): void {
+  _;
+}
+/* Some follow-up functionality: */
+function mustHaveBrilliggedBad(): void {
+  _;
+}
+/* The problem here is that there's no guarantee we'll /actually/ perform the prerequisite action. Especially in cases where we don't have the good fortune of having the function name explicitly declare it's preconditions.
+
+Instead: */
+
+class HaveBrilligged {
+  function doBrilligGood(slithyId: number): void {
+    _;
+  }
+  constructor(slithyId: number): HaveBrilligged {
+    doBrilligGood(slithyId);
+    return this;
+  }
+}
+
+function mustHaveBrilliggedGood(haveBrilligged: HaveBrilligged): void {
+  _;
+}
+#+end_src
+
+The second approach makes our ~brillig~ requirement explicit. We can no longer forget it. Any caller of ~mustHaveBrilliggedGood~ has to have a ~HaveBrilligged~ at hand and the only constructor for that calls ~doBrilligGood~. So we're pushing our global burden (all callers must have performed a prior action) into the type system yet again.
+
+This is much like our smart constructor technique. Except now our constructor is doing a side-effecting operation instead of performing validation. We call the resulting `HaveBrilligged` value a "witness" of the side-effect.
+
+Now for a somewhat more realistic (and, hopefully, motivating) example. Suppose we have a page which expects to often display paid content. We only actually display the paid content inside the page if the user has paid for it. If the user hasn't paid, we instead show them an upsell modal. Here's what that might look like:
+
+#+begin_src js
+import React from 'react';
+
+/* Just for convenience. In the real world, we'd use something better. */
+type Html = string;
+const _: any = undefined;
+
+/* `loadContent` will fail in an ugly way if the user hasn't paid for the content. */
+class PaidCourseContentBodyBad extends React.Component<{userId: string, itemId: string}, {itemContent: Html}> {
+  loadContent(userId: string, itemId: string): Html {
+    return _;
+  }
+}
+
+class Upsell extends React.Component<{itemId: string}, void> {}
+
+/* This component checks the payment status and picks a component to render accordingly. */
+class PaidCourseContentPageBad extends React.Component<{userId: string, itemId: string}, {hasPaid: boolean}> {
+  static fetchPaymentStatus(userId: string, itemId: string): boolean {
+    return _;
+  }
+  setPaymentStatus(userId: string, itemId: string): void {
+    this.setState({ hasPaid: PaidCourseContentPageBad.fetchPaymentStatus(userId, itemId) });
+  }
+  render() {
+    const body =
+          this.state.hasPaid ?
+            <PaidCourseContentBodyBad userId={this.props.userId} itemId={this.props.itemId} /> :
+            <Upsell itemId={this.props.itemId} />;
+    return <div> {/* ... */} body {/* ... */} </div>;
+  }
+}
+#+end_src
+
+By now, you should be tired of hearing about these problems. ~PaidCourseContentBodyBad~ has an implicit precondition---the check of payment status. We do it successfully in ~PaidCourseContentPageBad~, but the whole point of components is to be reusable. It would be easy to reuse ~PaidCourseContentBodyBad~ in a different context and forget to perform the check.
+
+A solution:
+
+#+begin_src js
+type Html = string;
+const _: any = undefined;
+
+class HasPaid {
+  static fetchPaymentStatus(userId: string, itemId: string): boolean {
+    return _;
+  }
+  constructor(userId: string, itemId: string): HasPaid {
+    if (HasPaid.fetchPaymentStatus(userId, itemId)) {
+      return this;
+    } else {
+      throw new TypeError('User hasn\'t paid for content');
+    }
+  }
+  static make(userId: string, itemId: string): ?HasPaid {
+    try {
+      return new HasPaid(userId, itemId);
+    } catch (e) {
+      if (e instanceof TypeError) {
+        return null;
+      } else {
+        throw e;
+      }
+    }
+  }
+}
+
+class PaidCourseContentBodyGood extends
+  React.Component<{userId: string, itemId: string, hasPaid: HasPaid}, {itemContent: Html}> {
+  loadContent(userId: string, itemId: string): Html {
+    return _;
+  }
+}
+
+class PaidCourseContentPageGood extends React.Component<{userId: string, itemId: string}, {hasPaid: ?HasPaid}> {
+  setPaymentStatus(userId: string, itemId: string): void {
+    this.setState({ hasPaid: HasPaid.make(userId, itemId) });
+  }
+  render() {
+    const body =
+          this.state.hasPaid ?
+           (<PaidCourseContentBodyGood
+             userId={this.props.userId}
+             itemId={this.props.itemId}
+             hasPaid={this.state.hasPaid}
+           />) :
+           (<Upsell
+             itemId={this.props.itemId}
+           />);
+    return <div> {/* ... */} body {/* ... */} </div>;
+  }
+}
+#+end_src
+
+Hurray! We've again made our requirement explicit via ~HasPaid~ which witnesses our check.
+
+*** Extension
+
+With a little imagination, you can see how we could extend this technique to encode full state machines in a way that ensures we make only valid transitions between states.
+
+* Why
+
+** Code quality
+
+We'll claim the standard benefits: documentation and reuse.
+
+*** Documentation
+
+Following these practices makes type signatures more informative.
+
+Go back and look through our examples. In each case, we have made an implicit requirement explicit. These explicit requirements, captured in code rather than locked in the original author's mind, are much more likely to be noticed and won't leave a some future modifier wondering why the code doesn't do what it looks like it should do.
+
+*** Reliability
+
+A further consequence of the former is that our techniques operate as enforceable documentation. Even if we diligently documented all our preconditions and contextual requirements, we might forget to satisfy them. By encoding them in our types, we require adherence which eliminates all issues arising from accidentally failing to establish the appropriate context.
